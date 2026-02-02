@@ -1,0 +1,76 @@
+.sidebar.border.border-right.col-md-3.col-lg-2.p-0.bg-body-tertiary
+      #sidebarMenu.offcanvas-md.offcanvas-end.bg-body-tertiary(tabindex='-1' aria-labelledby='sidebarMenuLabel')
+        .offcanvas-header
+          h5#sidebarMenuLabel.offcanvas-title
+            | Company name
+          button.btn-close(type='button' data-bs-dismiss='offcanvas' data-bs-target='#sidebarMenu' aria-label='Close')
+        .offcanvas-body.d-md-flex.flex-column.p-0.pt-lg-3.overflow-y-auto
+          ul.nav.flex-column
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2.active(aria-current='page' href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#house-fill')
+                |                     Dashboard
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#file-earmark')
+                |                     Orders
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#cart')
+                |                     Products
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#people')
+                |                     Customers
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#graph-up')
+                |                     Reports
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#puzzle')
+                |                     Integrations
+          h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-body-secondary.text-uppercase
+            span Saved reports
+            a.link-secondary(href='#' aria-label='Add a new report')
+              svg.bi(aria-hidden='true')
+                use(xlink:href='#plus-circle')
+          ul.nav.flex-column.mb-auto
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#file-earmark-text')
+                |                     Current month
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#file-earmark-text')
+                |                     Last quarter
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#file-earmark-text')
+                |                     Social engagement
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#file-earmark-text')
+                |                     Year-end sale
+          hr.my-3
+          ul.nav.flex-column.mb-auto
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#gear-wide-connected')
+                |                     Settings
+            li.nav-item
+              a.nav-link.d-flex.align-items-center.gap-2(href='#')
+                svg.bi(aria-hidden='true')
+                  use(xlink:href='#door-closed')
+                |                     Sign out
