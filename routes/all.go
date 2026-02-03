@@ -12,4 +12,5 @@ func CreateAllRoutes(app *fiber.App) {
 	CreateSchedulesRoutes(app)
 	CreateIntegrationsRoutes(app)
 	CreateUsersRoutes(app)
+	CreateSettingsRoutes(app)
 }

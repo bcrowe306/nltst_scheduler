@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"golang.org/x/crypto/bcrypt"
@@ -24,7 +25,7 @@ func checkPasswordHash(plain_password, hash string) bool {
 }
 
 type User struct {
-	ID            bson.ObjectID `bson:"_id,omitempty"`
+	ID            string `bson:"_id" json:"_id"`
 	Email         string
 	PhoneNumber   string
 	PasswordHash  string
@@ -46,6 +47,7 @@ func CreateUser(db *mongo.Database, email string, password string) (*mongo.Inser
 		EmailVerified: false,
 		PhoneVerified: false,
 	}
+	user.ID = uuid.NewString()
 	res, err := insertUser(db, &user)
 	return res, err
 }
@@ -56,7 +58,7 @@ func insertUser(db *mongo.Database, user *User) (*mongo.InsertOneResult, error) 
 	return res, err
 }
 
-func FindUserByID(db *mongo.Database, id bson.ObjectID) (*User, error) {
+func FindUserByID(db *mongo.Database, id string) (*User, error) {
 	collection := db.Collection(UserCollection)
 	var user User
 	err := collection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&user)
@@ -67,11 +69,7 @@ func FindUserByID(db *mongo.Database, id bson.ObjectID) (*User, error) {
 }
 
 func FindUserByIDString(db *mongo.Database, idStr string) (*User, error) {
-	id, err := bson.ObjectIDFromHex(idStr)
-	if err != nil {
-		return nil, err
-	}
-	return FindUserByID(db, id)
+	return FindUserByID(db, idStr)
 }
 
 func FindUserByEmailPassword(db *mongo.Database, email string, password string) (*User, error) {

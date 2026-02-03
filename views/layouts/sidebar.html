@@ -1,0 +1,56 @@
+{{define "sidebar"}}
+<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+  <div class="offcanvas-md offcanvas-end bg-body-tertiary" id="sidebarMenu" tabindex="-1" aria-labelledby="sidebarMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="sidebarMenuLabel">NLT South Tampa</h5>
+      <button class="btn-close" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="/">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="#house-fill"></use>
+            </svg>                    Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/members">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="/public/icons/person-badge.svg"></use>
+            </svg>                    Members</a></li>
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/teams">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="/public/icons/people.svg"></use>
+            </svg>                    Teams</a></li>
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/services">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="/public/icons/clipboard-data.svg"></use>
+            </svg>                    Services</a></li>
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/schedules">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="/public/icons/calendar2-check.svg"></use>
+            </svg>                    Schedules</a></li>
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/integrations">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="#puzzle"></use>
+            </svg>                    Integrations</a></li>
+      </ul>
+      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase"><span>Admin</span></h6>
+      <ul class="nav flex-column mb-auto">
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/users">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="/public/icons/person-circle.svg"></use>
+            </svg>                    Users</a></li>
+      </ul>
+      <hr class="my-3"/>
+      <ul class="nav flex-column mb-auto">
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="/settings">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="#gear-wide-connected"></use>
+            </svg>                    Settings</a></li>
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="#">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="#door-closed"></use>
+            </svg>                    Sign out</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{{end}}

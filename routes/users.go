@@ -10,6 +10,31 @@ import (
 )
 
 func CreateUsersRoutes(app *fiber.App) {
+	app.Get("/users/:id", func(c fiber.Ctx) error {
+		// User edit page
+		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
+		if !ok {
+			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
+		}
+
+		userID := c.Params("id")
+		user, err := models.FindUserByID(db, userID)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching user")
+		}
+
+		err = c.Render("pages/users/edit", fiber.Map{
+			"Title": "Edit User",
+			"User":  user,
+		}, "layouts/main")
+
+		if err != nil {
+			log.Print(err)
+			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
+		}
+		return nil
+	})
+
 	app.Get("/users", func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
@@ -24,11 +49,13 @@ func CreateUsersRoutes(app *fiber.App) {
 		err = c.Render("pages/users/index", fiber.Map{
 			"Title": "Users",
 			"Users": users,
-		})
+		}, "layouts/main")
+
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
 		}
 		return nil
 	})
+
 }

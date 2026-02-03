@@ -1,0 +1,60 @@
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/users">Users</a></li>
+  </ol>
+</nav>
+<div class="card">
+  <div class="card-header">{{ .Title }}</div>
+  <div class="card-body">
+    <form method="POST" action="/users/{{.User.ID}}">
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input value="{{.User.Email}}" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+      </div>
+      <!-- Phone Number  -->
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input value="{{.User.PhoneNumber}}" type="text" class="form-control" id="phoneNumber">
+      </div>
+
+      <!-- Enabled -->
+      <div class="mb-3 form-check">
+        <input {{if .User.Enabled}}checked{{end}} type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Enabled</label>
+      </div>
+
+      <!-- Email Verified Label just a label that is green if verified -->
+      <div class="mb-3">
+        <label class="form-label">Email:</label>
+        {{if .User.EmailVerified}}
+        <span class="badge bg-success">Verified</span>
+        {{else}}
+        <span class="badge bg-danger">Not Verified</span>
+        {{end}}
+      </div>
+
+
+      <!-- Phone Verified Label just a label that is green if verified -->
+      <div class="mb-3">
+        <label class="form-label">Phone:</label>
+        {{if .User.PhoneVerified}}
+        <span class="badge bg-success">Verified</span>
+        {{else}}
+        <span class="badge bg-danger">Not Verified</span>
+        {{end}}
+      </div>
+
+      <!-- Reset Password -->
+      <a href="/users/reset_pass/{{.User.ID}}" class="btn btn-secondary">Reset Password</a>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+
+      <!-- Cancel -->
+      <a href="/users" class="btn btn-link">Cancel</a>
+    </form>
+  </div>
+</div>

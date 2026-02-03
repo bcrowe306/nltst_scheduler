@@ -1,11 +1,11 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/static"
-	"github.com/gofiber/template/pug/v2"
-
-	"log"
+	"github.com/gofiber/template/html/v2"
 
 	"context"
 
@@ -39,8 +39,9 @@ func main() {
 	// Create DB schema
 	createDbSchema(config, database)
 
-	// Start Fiber app with Pug template engine
-	engine := pug.New("./views", ".pug")
+	// Start Fiber app with HTML template engine
+	engine := html.New("./views", ".html")
+	engine.Reload(true) // Enable hot-reloading of templates during development
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
