@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+            "program": "${workspaceFolder}/build/nltst_scheduler",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+        
+    
+    ]
+}

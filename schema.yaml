@@ -1,0 +1,48 @@
+Application:
+  User:
+    id: objectId
+    email: string
+    password_hash: string
+
+
+  Member:
+    id: objectId
+    name: string
+    phoneNumber: string
+    email: string
+    teams: 
+      - objectId
+
+  Teams:
+    id: objectId
+    name: string
+    description: string
+    members: 
+      - objectId
+
+  Services:
+    id: objectId
+    name: string
+    description: string
+    team: objectId
+    positions: 
+      - name: string
+        description: string
+        
+  Event:
+    id: objectId
+    service: objectId
+    startTime: datetime
+    endTime: datetime
+    positionAssignments:
+      - positionName: string
+        member: objectId
+
+  Schedules:
+    id: objectId
+    name: string
+    description: string
+    events:
+      - objectId
+
+        

@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // Make build directory
+        {
+            "label": "Make Build Directory",
+            "type": "shell",
+            "command": "mkdir -p build",
+            "problemMatcher": []
+        },
+
+        // Build the Go application
+        {
+            "label": "Build Go Application",
+            "type": "shell",
+            "command": "go build -o build/nltst_scheduler .",
+            "dependsOn": "Make Build Directory",
+            "problemMatcher": []
+        }
+    ]
+}
