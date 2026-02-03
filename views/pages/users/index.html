@@ -1,28 +1,54 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="mt-3">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item active" aria-current="page"><a href="/users">Users</a></li>
   </ol>
 </nav>
+<p class="h2">Users</p>
 <div class="card">
-  <div class="card-header">{{ .Title }} List</div>
+  <div class="card-header">
+  
+    <nav class="navbar bg-body-tertiary">
+      <form class="container-fluid justify-content-start">
+        <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/users/new" role="button">
+          <svg class="bi" aria-hidden="true"> <use xlink:href="/public/icons/person-add.svg"> </use> </svg>
+        </a>
+      </form>
+    </nav>
+
+  </div>
   <div class="card-body"></div>
   <table class="table table table-striped table-hover">
     <thead>
       <tr>
+        <th>Name</th>
         <th>Email</th>
         <th>Phone Number </th>
+        <th>Status</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       {{range .Users}} 
       <tr>
+        <td>
+          <a href="/users/{{.ID}}">
+            {{.Name}}
+          </a>
+        </td>
         <td>{{.Email}}</td>
         <td>{{.PhoneNumber}}</td>
         <td>
-          <a class="icon-link" href="/users/{{.ID}}">
-            <svg class="bi" aria-hidden="true"> <use xlink:href="/public/icons/pencil-square.svg"> </use> </svg>
+          <!-- Enabled Badge -->
+          {{if .Enabled}}
+          <span class="badge bg-success">Enabled</span>
+          {{else}}
+          <span class="badge bg-danger">Disabled</span>
+          {{end}}
+        </td>
+        <td>
+          <a class="icon-link text-danger" href="/users/delete/{{.ID}}">
+            <svg class="bi" aria-hidden="true"> <use xlink:href="/public/icons/trash.svg"> </use> </svg>
           </a>
         </td>
       </tr>

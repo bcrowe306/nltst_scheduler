@@ -40,7 +40,7 @@ func createDbSchema(config *Config, database *mongo.Database) {
 	})
 
 	// Create admin user
-	res, err := models.CreateUser(database, config.AdminEmail, config.AdminPassword)
+	res, err := models.CreateUser(database, "Administrator", config.AdminEmail, config.AdminPassword, "")
 	if err != nil {
 		if IsDup(err) {
 			log.Println("Admin user already exists, skipping insertion")

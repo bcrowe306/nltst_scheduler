@@ -24,7 +24,7 @@ func CreateIntegrationsRoutes(app *fiber.App) {
 		err = c.Render("pages/integrations/index", fiber.Map{
 			"Title": "Integrations",
 			"Users": users,
-		})
+		}, "layouts/main")
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")

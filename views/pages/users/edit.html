@@ -1,28 +1,38 @@
 
-<nav aria-label="breadcrumb">
+<nav class="mt-3" aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="/users">Users</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/users">Users</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{.User.ID}}</li>
   </ol>
 </nav>
 <div class="card">
   <div class="card-header">{{ .Title }}</div>
   <div class="card-body">
+
     <form method="POST" action="/users/{{.User.ID}}">
+      <!-- Name -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input name="name" value="{{.User.Name}}" type="text" class="form-control" id="name" aria-describedby="nameHelp">
+      </div>
+
+      <!-- Email Address -->
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input value="{{.User.Email}}" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <input name="email" value="{{.User.Email}}" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
         <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
       </div>
+
       <!-- Phone Number  -->
       <div class="mb-3">
         <label for="phoneNumber" class="form-label">Phone Number</label>
-        <input value="{{.User.PhoneNumber}}" type="text" class="form-control" id="phoneNumber">
+        <input name="phoneNumber" value="{{.User.PhoneNumber}}" type="text" class="form-control" id="phoneNumber">
       </div>
 
       <!-- Enabled -->
       <div class="mb-3 form-check">
-        <input {{if .User.Enabled}}checked{{end}} type="checkbox" class="form-check-input" id="exampleCheck1">
+        <input name="enabled" {{if .User.Enabled}}checked{{end}} type="checkbox" class="form-check-input" id="enabled">
         <label class="form-check-label" for="exampleCheck1">Enabled</label>
       </div>
 

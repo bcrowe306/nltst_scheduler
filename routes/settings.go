@@ -24,7 +24,8 @@ func CreateSettingsRoutes(app *fiber.App) {
 		err = c.Render("pages/settings/index", fiber.Map{
 			"Title": "Settings",
 			"Users": users,
-		})
+		}, "layouts/main")
+
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")

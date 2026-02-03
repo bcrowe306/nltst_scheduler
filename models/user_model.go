@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -25,28 +26,38 @@ func checkPasswordHash(plain_password, hash string) bool {
 }
 
 type User struct {
-	ID            string `bson:"_id" json:"_id"`
-	Email         string
-	PhoneNumber   string
-	PasswordHash  string
-	Enabled       bool
-	EmailVerified bool
-	PhoneVerified bool
+	ID            string    `bson:"_id" json:"_id"`
+	Name          string    `json:"name" bson:"name"`
+	Email         string    `json:"email" bson:"email"`
+	PhoneNumber   string    `json:"phoneNumber" bson:"phoneNumber"`
+	PasswordHash  string    `json:"passwordHash" bson:"passwordHash"`
+	Enabled       bool      `json:"enabled" bson:"enabled"`
+	EmailVerified bool      `json:"emailVerified" bson:"emailVerified"`
+	PhoneVerified bool      `json:"phoneVerified" bson:"phoneVerified"`
+	CreatedAt     time.Time `json:"created" bson:"createTime"`
+	UpdatedAt     time.Time `json:"updated" bson:"updateTime"`
+	LastLogin     time.Time `json:"lastLogin" bson:"lastLogin"`
 }
 
-func CreateUser(db *mongo.Database, email string, password string) (*mongo.InsertOneResult, error) {
+func CreateUser(db *mongo.Database, name string, email string, password string, phoneNumber string) (*mongo.InsertOneResult, error) {
 	passwordHash, err := hashPassword(password)
 	if err != nil {
 		return nil, err
 	}
 
 	user := User{
+		Name:          name,
 		Email:         email,
+		PhoneNumber:   phoneNumber,
 		PasswordHash:  passwordHash,
 		Enabled:       true,
 		EmailVerified: false,
 		PhoneVerified: false,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+		LastLogin:     time.Time{},
 	}
+
 	user.ID = uuid.NewString()
 	res, err := insertUser(db, &user)
 	return res, err
@@ -103,34 +114,34 @@ func FindUserByPhoneNumber(db *mongo.Database, phoneNumber string) (*User, error
 	return &user, nil
 }
 
-func UpdateUser(db *mongo.Database, user *User) error {
+func UpdateUser(db *mongo.Database, userID string, user *User) error {
 	collection := db.Collection(UserCollection)
 	// Remove ID from the update document to avoid immutable field error
 	// Use bson.M to set the fields to be updated
 
 	_, err := collection.UpdateOne(
 		context.TODO(),
-		bson.M{"_id": user.ID},
+		bson.M{"_id": userID},
 		bson.M{"$set": bson.M{
 			"email":       user.Email,
 			"phoneNumber": user.PhoneNumber,
+			"name":        user.Name,
+			"updatedAt":   time.Now(),
+			"enabled":     user.Enabled,
 		}},
 	)
 	return err
 }
 
-func DeleteUser(db *mongo.Database, id bson.ObjectID) error {
+func DeleteUser(db *mongo.Database, id string) error {
 	collection := db.Collection(UserCollection)
 	_, err := collection.DeleteOne(context.TODO(), bson.M{"_id": id})
 	return err
 }
 
 func DeleteUserByIDString(db *mongo.Database, idStr string) error {
-	id, err := bson.ObjectIDFromHex(idStr)
-	if err != nil {
-		return err
-	}
-	return DeleteUser(db, id)
+
+	return DeleteUser(db, idStr)
 }
 
 func DeleteUserByEmail(db *mongo.Database, email string) error {

@@ -24,7 +24,8 @@ func CreateMembersRoutes(app *fiber.App) {
 		err = c.Render("pages/members/index", fiber.Map{
 			"Title": "Members",
 			"Users": users,
-		})
+		}, "layouts/main")
+
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
