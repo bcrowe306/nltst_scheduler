@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -84,14 +85,29 @@ func FindUserByIDString(db *mongo.Database, idStr string) (*User, error) {
 }
 
 func FindUserByEmailPassword(db *mongo.Database, email string, password string) (*User, error) {
+	log.Printf("Attempting to find user by email: %s", email)
 	user, err := FindUserByEmail(db, email)
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("User found: %s", user.Email)
 	if !checkPasswordHash(password, user.PasswordHash) {
 		return nil, mongo.ErrNoDocuments
 	}
+
 	return user, nil
+}
+
+func UpdateUserLoginTime(db *mongo.Database, userID string) error {
+	collection := db.Collection(UserCollection)
+	_, err := collection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": userID},
+		bson.M{"$set": bson.M{
+			"lastLogin": time.Now(),
+		}},
+	)
+	return err
 }
 
 func FindUserByEmail(db *mongo.Database, email string) (*User, error) {
@@ -101,6 +117,7 @@ func FindUserByEmail(db *mongo.Database, email string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("Found user with email: %s", user.Email)
 	return &user, nil
 }
 

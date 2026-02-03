@@ -10,7 +10,7 @@ import (
 )
 
 func CreateDashboardRoutes(app *fiber.App) {
-	app.Get("/", func(c fiber.Ctx) error {
+	app.Get("/", Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")

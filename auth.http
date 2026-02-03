@@ -1,0 +1,5 @@
+POST http://localhost:8080/auth/logout
+Content-Type: application/x-www-form-urlencoded
+
+email=admin%40nltst.com
+&password=Admin%401234

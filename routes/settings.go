@@ -10,7 +10,7 @@ import (
 )
 
 func CreateSettingsRoutes(app *fiber.App) {
-	app.Get("/settings", func(c fiber.Ctx) error {
+	app.Get("/settings", Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")

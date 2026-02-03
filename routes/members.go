@@ -10,7 +10,7 @@ import (
 )
 
 func CreateMembersRoutes(app *fiber.App) {
-	app.Get("/members", func(c fiber.Ctx) error {
+	app.Get("/members", Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
