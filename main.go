@@ -72,7 +72,6 @@ func main() {
 
 	// Serve static files
 	app.Use("/public", static.New("./public"))
-
 	// Create all routes
 	routes.CreateAllRoutes(app)
 

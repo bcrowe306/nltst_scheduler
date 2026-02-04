@@ -1,0 +1,42 @@
+{{template "breadcrumbs" .}}
+
+<!-- Edit Member Card -->
+<div class="card">
+  <div class="card-header">{{ .Title }}</div>
+  <div class="card-body">
+
+    <form method="POST" action="/members/{{.Member.ID}}">
+      <!-- First Name -->
+      <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <input name="firstName" type="text" class="form-control" id="firstName" aria-describedby="firstNameHelp" value="{{.Member.FirstName}}">
+      </div>
+
+      <!-- Last Name -->
+      <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input name="lastName" type="text" class="form-control" id="lastName" aria-describedby="lastNameHelp" value="{{.Member.LastName}}">
+      </div>
+
+
+      <!-- Email Address -->
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input name="email"  type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{.Member.Email}}">
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+      </div>
+
+      <!-- Phone Number  -->
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input name="phoneNumber" type="text" class="form-control" id="phoneNumber" value="{{.Member.PhoneNumber}}">
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+
+      <!-- Cancel -->
+      <a href="/members" class="btn btn-link">Cancel</a>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+{{template "breadcrumbs" .}}
+
+<!-- New Service Card -->
+<div class="card">
+    <div class="card-header">
+        <form method="POST" action="/services/{{ .Service.ID }}">
+        
+        
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" value="{{ .Service.Name }}">
+            </div>
+        
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" id="description" rows="3">{{ .Service.Description }}</textarea>
+            </div>
+        
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        
+            <!-- Cancel -->
+            <a href="/services" class="btn btn-link">Cancel</a>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-3">
+                <p class="h6 mb-2">Positions</p>
+                <!-- Listgroup of service positions -->
+                <ul class="list-group">
+                    {{range .Service.Positions}}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">{{ .Name }}</div>
+                            {{ .Description }}
+                        </div>
+                        <!-- Delete Position Button -->
+                        <a href="/services/{{ $.Service.ID }}/positions/{{ .Name }}/delete" class="icon-link text-danger me-2">
+                            <svg class="bi" aria-hidden="true">
+                                <use xlink:href="/public/icons/trash.svg"> </use>
+                            </svg>
+                        </a>
+                    </li>
+                    {{end}}
+                </ul>
+                
+            </div>
+            <div class="col-lg-9">
+                
+                <!-- Add Position Form -->
+                <form method="POST" action="/services/{{ .Service.ID }}/positions">
+                    <!-- Position Name -->
+                    <div class="mb-3">
+                        <label for="position-name" class="form-label">Position Name</label>
+                        <input name="position-name" type="text" class="form-control" id="position-name" aria-describedby="positionNameHelp">
+                    </div>
+
+                    <!-- Position Description -->
+                    <div class="mb-3">
+                        <label for="position-description" class="form-label">Position Description</label>
+                        <textarea name="position-description" class="form-control" id="position-description" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add Position</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>

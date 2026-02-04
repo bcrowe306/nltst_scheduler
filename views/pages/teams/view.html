@@ -1,0 +1,66 @@
+{{template "breadcrumbs" .}}
+<div class="card">
+    <div class="card-header">
+        <!-- Form to edit team details -->
+        <form method="POST" action="/teams/{{.Team.ID}}/edit">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input name="name" type="text" class="form-control" id="name" value="{{.Team.Name}}" aria-describedby="nameHelp">
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" id="description" rows="3">{{.Team.Description}}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Team</button>
+        </form>
+    </div>
+    <div class="card-body">
+        <!-- List group of members with delete button at right -->
+        <div class="row">
+            <div class="col-lg-3">
+                <h5>Members</h5>
+                <ul class="list-group">
+
+                    {{range .Team.Members}}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            {{.FirstName}} {{.LastName}} - {{.Email}}
+                        </div>
+                        <div>
+                            <a href="/teams/{{$.Team.ID}}/remove_member/{{.ID}}" class="btn btn-sm btn-danger">
+                                <svg class="bi" aria-hidden="true">
+                                    <use xlink:href="/public/icons/trash.svg"> </use>
+                                </svg>
+                            </a>
+                        </div>
+                    </li>
+                    {{else}}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        No members in this team.
+                    </li>
+                    {{end}}
+
+                </ul>
+            </div>
+
+            <!-- Members to add -->
+            <div class="col-lg-9">
+                <form method="POST" action="/teams/{{.Team.ID}}/add_member">
+                    <div class="mb-3">
+                        <label for="memberSelect" class="form-label">Add Member</label>
+                        <select class="form-select" id="memberSelect" name="memberID">
+                            {{range .Members}}
+                            <option value="{{.ID}}">{{.FirstName}} {{.LastName}} - {{.Email}}</option>
+                            {{end}}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
+                </form>
+            </div>
+        </div>
+       
+    </div>
+
+</div>

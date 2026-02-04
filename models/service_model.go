@@ -2,7 +2,9 @@ package models
 
 import (
 	"context"
+	"time"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
@@ -10,15 +12,17 @@ import (
 const ServiceCollection = "services"
 
 type Position struct {
-	Name        string
-	Description string
+	Name        string `bson:"name" json:"name" query:"name" form:"name"`
+	Description string `bson:"description" json:"description" query:"description" form:"description"`
 }
 
 type Service struct {
-	ID          bson.ObjectID `bson:"_id,omitempty"`
-	Name        string
-	Description string
-	Positions   []Position
+	ID          string     `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
+	Name        string     `bson:"name" json:"name" query:"name" form:"name"`
+	Description string     `bson:"description" json:"description" query:"description" form:"description"`
+	Positions   []Position `bson:"positions,omitempty" json:"positions" query:"positions" form:"positions"`
+	CreatedAt   time.Time  `bson:"createdAt" json:"createdAt"`
+	UpdatedAt   time.Time  `bson:"updatedAt" json:"updatedAt"`
 }
 
 func GetAllServices(db *mongo.Database) ([]Service, error) {
@@ -44,6 +48,10 @@ func GetAllServices(db *mongo.Database) ([]Service, error) {
 }
 
 func InsertService(db *mongo.Database, service *Service) (*mongo.InsertOneResult, error) {
+	service.ID = uuid.NewString()
+	service.CreatedAt = time.Now()
+	service.UpdatedAt = time.Now()
+	service.Positions = make([]Position, 0)
 	collection := db.Collection(ServiceCollection)
 	res, err := collection.InsertOne(context.TODO(), service)
 	return res, err
@@ -56,21 +64,21 @@ func UpdateService(db *mongo.Database, service *Service) (*mongo.UpdateResult, e
 		"$set": bson.M{
 			"name":        service.Name,
 			"description": service.Description,
-			"positions":   service.Positions,
+			"updatedAt":   time.Now(),
 		},
 	}
 	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	return res, err
 }
 
-func DeleteService(db *mongo.Database, serviceID bson.ObjectID) (*mongo.DeleteResult, error) {
+func DeleteService(db *mongo.Database, serviceID string) (*mongo.DeleteResult, error) {
 	collection := db.Collection(ServiceCollection)
 	filter := bson.M{"_id": serviceID}
 	res, err := collection.DeleteOne(context.TODO(), filter)
 	return res, err
 }
 
-func GetServiceByID(db *mongo.Database, serviceID bson.ObjectID) (*Service, error) {
+func GetServiceByID(db *mongo.Database, serviceID string) (*Service, error) {
 	collection := db.Collection(ServiceCollection)
 	var service Service
 	err := collection.FindOne(context.TODO(), bson.M{"_id": serviceID}).Decode(&service)
@@ -91,46 +99,47 @@ func GetServiceByName(db *mongo.Database, name string) (*Service, error) {
 }
 
 func GetServiceByIDString(db *mongo.Database, idStr string) (*Service, error) {
-	serviceID, err := bson.ObjectIDFromHex(idStr)
-	if err != nil {
-		return nil, err
-	}
-	return GetServiceByID(db, serviceID)
+	return GetServiceByID(db, idStr)
 }
 
 func DeleteServiceByIDString(db *mongo.Database, idStr string) (*mongo.DeleteResult, error) {
-	serviceID, err := bson.ObjectIDFromHex(idStr)
-	if err != nil {
-		return nil, err
-	}
-	return DeleteService(db, serviceID)
+
+	return DeleteService(db, idStr)
 }
 
-func AddPositionToService(db *mongo.Database, serviceID bson.ObjectID, position Position) (*mongo.UpdateResult, error) {
+func AddPositionToService(db *mongo.Database, serviceID string, position Position) (*mongo.UpdateResult, error) {
 	collection := db.Collection(ServiceCollection)
 	filter := bson.M{"_id": serviceID}
+	// Use $addToSet to avoid duplicate positions. Make sure positions is array using $ifNull if null.
+
 	update := bson.M{
-		"$push": bson.M{
+		"$addToSet": bson.M{
 			"positions": position,
+		},
+		"$set": bson.M{
+			"updatedAt": time.Now(),
 		},
 	}
 	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	return res, err
 }
 
-func RemovePositionFromService(db *mongo.Database, serviceID bson.ObjectID, positionName string) (*mongo.UpdateResult, error) {
+func RemovePositionFromService(db *mongo.Database, serviceID string, positionName string) (*mongo.UpdateResult, error) {
 	collection := db.Collection(ServiceCollection)
 	filter := bson.M{"_id": serviceID}
 	update := bson.M{
 		"$pull": bson.M{
 			"positions": bson.M{"name": positionName},
 		},
+		"$set": bson.M{
+			"updatedAt": time.Now(),
+		},
 	}
 	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	return res, err
 }
 
-func UpdatePositionInService(db *mongo.Database, serviceID bson.ObjectID, position Position) (*mongo.UpdateResult, error) {
+func UpdatePositionInService(db *mongo.Database, serviceID string, position Position) (*mongo.UpdateResult, error) {
 	collection := db.Collection(ServiceCollection)
 	filter := bson.M{"_id": serviceID, "positions.name": position.Name}
 	update := bson.M{

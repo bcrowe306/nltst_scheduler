@@ -33,11 +33,23 @@ func createCollection(database *mongo.Database, name string) *mongo.Collection {
 }
 
 func createDbSchema(config *Config, database *mongo.Database) {
+
+	// Create collections and indexes
 	usersColl := createCollection(database, "users")
 	usersColl.Indexes().CreateOne(context.TODO(), mongo.IndexModel{
 		Keys:    map[string]interface{}{"email": 1},
 		Options: options.Index().SetUnique(true),
 	})
+
+	createCollection(database, "members")
+	teamsColl := createCollection(database, "teams")
+	teamsColl.Indexes().CreateOne(context.TODO(), mongo.IndexModel{
+		Keys:    map[string]interface{}{"name": 1},
+		Options: options.Index().SetUnique(true),
+	})
+	createCollection(database, "services")
+	createCollection(database, "events")
+	createCollection(database, "schedules")
 
 	// Create admin user
 	res, err := models.CreateUser(database, "Administrator", config.AdminEmail, config.AdminPassword, "")

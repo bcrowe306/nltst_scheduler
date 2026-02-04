@@ -1,0 +1,13 @@
+{{define "breadcrumbs"}}
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="/">Home</a>
+        </li>
+        {{range $index, $element := .Path}}
+        <li class="breadcrumb-item"><a href="/{{ $element }}">{{ $element }}</a></li>
+        {{end}}
+    </ol>
+</nav>
+
+{{end}}

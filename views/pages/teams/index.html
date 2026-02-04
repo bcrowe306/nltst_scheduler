@@ -1,32 +1,56 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="/users">Users</a></li>
-  </ol>
-</nav>
+
+{{template "breadcrumbs" .}}
+<p class="h2">{{ .Title }}</p>
 <div class="card">
-  <div class="card-header">{{ .Title }} List</div>
-  <div class="card-body"></div>
-  <table class="table table table-striped table-hover">
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Phone Number </th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {{range .Users}} 
-      <tr>
-        <td>{{.Email}}</td>
-        <td>{{.PhoneNumber}}</td>
-        <td>
-          <a class="icon-link" href="/users/{{.ID}}">
-            <svg class="bi" aria-hidden="true"> <use xlink:href="/public/icons/pencil-square.svg"> </use> </svg>
-          </a>
-        </td>
-      </tr>
-      {{end}}
-    </tbody>
-  </table>
+    <div class="card-header">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/teams/new" role="button">
+                    <svg class="bi" aria-hidden="true">
+                        <use xlink:href="/public/icons/plus-circle.svg"> </use>
+                    </svg>
+                </a>
+            </form>
+        </nav>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {{range .Teams}}
+            <div class="col-md-12 col-lg-3 mb-3">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="card-title">
+
+                            <svg class="bi mr-4" aria-hidden="true">
+                                <use xlink:href="/public/icons/people-fill.svg"> </use>
+                            </svg>
+                            <a href="/teams/{{.ID}}" class="h5 text-decoration-none text-primary">
+                                {{.Name}}
+                            </a>
+                            <!-- Float right trash link to delete -->
+                            <a href="/teams/delete/{{.ID}}" class="text-danger float-end">
+                                <svg class="bi" aria-hidden="true">
+                                    <use xlink:href="/public/icons/trash.svg"> </use>
+                                </svg>
+                            </a>
+                            <p class="h6"> <small>{{.Description}}</small></p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                {{range .Members}}
+                                <li>{{.FirstName}} {{.LastName}}</li>
+                                {{end}}
+                            </ul>
+                        </div>
+                       
+
+                    </div>
+                </div>
+            </div>
+            
+            {{end}}
+        </div>
+        
+    </div>
+    
 </div>

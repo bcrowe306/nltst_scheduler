@@ -1,16 +1,23 @@
 {{template "breadcrumbs" .}}
 
-<!-- New User Card -->
+<!-- New Member Card -->
 <div class="card">
   <div class="card-header">{{ .Title }}</div>
   <div class="card-body">
 
-    <form method="POST" action="/users">
-      <!-- Name -->
+    <form method="POST" action="/members">
+      <!-- First Name -->
       <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp">
+        <label for="firstName" class="form-label">First Name</label>
+        <input name="firstName" type="text" class="form-control" id="firstName" aria-describedby="firstNameHelp">
       </div>
+
+      <!-- Last Name -->
+      <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input name="lastName" type="text" class="form-control" id="lastName" aria-describedby="lastNameHelp">
+      </div>
+
 
       <!-- Email Address -->
       <div class="mb-3">
@@ -25,23 +32,11 @@
         <input name="phoneNumber" type="text" class="form-control" id="phoneNumber">
       </div>
 
-      <!-- Password -->
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input name="password" type="password" class="form-control" id="password">
-      </div>
-
-      <!-- Confirm Password -->
-      <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Confirm Password</label>
-        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword">
-      </div>
-
       <!-- Submit -->
       <button type="submit" class="btn btn-primary">Submit</button>
 
       <!-- Cancel -->
-      <a href="/users" class="btn btn-link">Cancel</a>
+      <a href="/members" class="btn btn-link">Cancel</a>
     </form>
   </div>
 </div>

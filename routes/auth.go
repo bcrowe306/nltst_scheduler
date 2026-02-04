@@ -2,6 +2,7 @@ package routes
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 
@@ -26,18 +27,72 @@ func Protected(c fiber.Ctx) error {
 	return c.Next()
 }
 
+func GetUserFromSession(c fiber.Ctx) (*models.User, error) {
+	sess := session.FromContext(c)
+	if sess == nil {
+		return nil, fiber.ErrUnauthorized
+	}
+
+	userID := sess.Get("user_id")
+	if userID == nil {
+		return nil, fiber.ErrUnauthorized
+	}
+
+	db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
+	if !ok {
+		return nil, fiber.ErrInternalServerError
+	}
+
+	user, err := models.FindUserByID(db, userID.(string))
+	if err != nil {
+		return nil, fiber.ErrUnauthorized
+	}
+
+	return user, nil
+}
+
+func GetRoutePathList(c fiber.Ctx) []string {
+	path := c.Path()
+
+	// Split the path into segments by /
+	var segments []string
+	for _, segment := range strings.Split(path, "/") {
+		if segment != "" {
+			segments = append(segments, segment)
+		}
+	}
+	return segments
+}
+
+func GetDefaultTemplateData(c fiber.Ctx, title string) fiber.Map {
+	user, err := GetUserFromSession(c)
+	if err != nil {
+		return fiber.Map{}
+	}
+
+	return fiber.Map{
+		"Title": title,
+		"Path":  GetRoutePathList(c),
+		"User":  user,
+	}
+}
+
+func GetDatabaseFromContext(c fiber.Ctx) (*mongo.Database, error) {
+	db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
+	if !ok {
+		return nil, fiber.ErrInternalServerError
+	}
+	return db, nil
+}
+
 func CreateAuthRoutes(app *fiber.App) {
 
 	app.Get("/login", func(c fiber.Ctx) error {
-		return c.Render("pages/auth/login", fiber.Map{
-			"Title": "Login",
-		})
+		return c.Render("pages/auth/login", GetDefaultTemplateData(c, "Login"))
 	})
 
 	app.Get("/signup", func(c fiber.Ctx) error {
-		return c.Render("pages/auth/signup", fiber.Map{
-			"Title": "Sign Up",
-		})
+		return c.Render("pages/auth/signup", GetDefaultTemplateData(c, "Sign Up"))
 	})
 
 	app.Post("/auth/signup", func(c fiber.Ctx) error {

@@ -1,36 +1,52 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page"><a href="/users">Users</a></li>
-    </ol>
-</nav>
+
+{{template "breadcrumbs" .}}
+<p class="h2">{{ .Title }}</p>
 <div class="card">
-    <div class="card-header">{{ .Title }} List</div>
+    <div class="card-header">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/members/new" role="button">
+                    <svg class="bi" aria-hidden="true">
+                        <use xlink:href="/public/icons/person-add.svg"> </use>
+                    </svg>
+                </a>
+            </form>
+        </nav>
+    </div>
     <div class="card-body"></div>
     <table class="table table table-striped table-hover">
         <thead>
             <tr>
-                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email </th>
                 <th>Phone Number </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            {{range .Users}}
+            {{ range .Members }}
             <tr>
                 <td>
-                    <a href="/users/{{.ID}}"></a>
-                    {{.Email}}</td>
-                <td>{{.PhoneNumber}}</td>
+                    <a href="/members/{{ .ID }}">{{ .FirstName }}</a>
+                </td>
+                <td>{{ .LastName }}</td>
+                <td>{{ .Email }}</td>
+                <td>{{ .PhoneNumber }}</td>
                 <td>
-                    <a class="icon-link" href="/users/delete/{{.ID}}">
+                    <a class="icon-link text-danger" href="/members/delete/{{.ID}}">
                         <svg class="bi" aria-hidden="true">
                             <use xlink:href="/public/icons/trash.svg"> </use>
                         </svg>
                     </a>
                 </td>
             </tr>
-            {{end}}
+            {{ else }}
+            <tr>
+                <td colspan="5">No members found.</td>
+            </tr>
+            {{ end }}
         </tbody>
+        
     </table>
 </div>
