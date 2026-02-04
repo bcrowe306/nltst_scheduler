@@ -47,9 +47,8 @@ func createDbSchema(config *Config, database *mongo.Database) {
 		Keys:    map[string]interface{}{"name": 1},
 		Options: options.Index().SetUnique(true),
 	})
-	createCollection(database, "services")
+	createCollection(database, "event_templates")
 	createCollection(database, "events")
-	createCollection(database, "schedules")
 
 	// Create admin user
 	res, err := models.CreateUser(database, "Administrator", config.AdminEmail, config.AdminPassword, "")

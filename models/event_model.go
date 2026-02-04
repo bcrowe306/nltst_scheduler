@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -9,26 +10,21 @@ import (
 
 const EventCollection = "events"
 
-//   Event:
-//     id: objectId
-//     service: objectId
-//     startTime: datetime
-//     endTime: datetime
-//     positionAssignments:
-//       - positionName: string
-//         member: objectId
-
 type Event struct {
-	ID                  bson.ObjectID `bson:"_id,omitempty"`
-	Service             bson.ObjectID
-	StartTime           string
-	EndTime             string
-	PositionAssignments []PositionAssignment
+	ID                  string               `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
+	Name                string               `bson:"name" json:"name" query:"name" form:"name"`
+	Description         string               `bson:"description" json:"description" query:"description" form:"description"`
+	Template            string               `bson:"template" json:"template" query:"template" form:"template"`
+	StartTime           string               `bson:"startTime" json:"startTime" query:"startTime" form:"startTime"`
+	EndTime             string               `bson:"endTime" json:"endTime" query:"endTime" form:"endTime"`
+	Date                time.Time            `bson:"date" json:"date" query:"date" form:"date"`
+	TeamID              string               `bson:"teamId" json:"teamId" query:"teamId" form:"teamId"`
+	PositionAssignments []PositionAssignment `bson:"positionAssignments" json:"positionAssignments" query:"positionAssignments" form:"positionAssignments"`
 }
 
 type PositionAssignment struct {
-	PositionName string
-	Member       bson.ObjectID
+	PositionName string `bson:"positionName" json:"positionName" query:"positionName" form:"positionName"`
+	Member       string `bson:"member" json:"member" query:"member" form:"member"`
 }
 
 func GetAllEvents(db *mongo.Database) ([]Event, error) {
@@ -64,7 +60,9 @@ func UpdateEvent(db *mongo.Database, event *Event) (*mongo.UpdateResult, error) 
 	filter := bson.M{"_id": event.ID}
 	update := bson.M{
 		"$set": bson.M{
-			"service":             event.Service,
+			"name":                event.Name,
+			"description":         event.Description,
+			"template":            event.Template,
 			"startTime":           event.StartTime,
 			"endTime":             event.EndTime,
 			"positionAssignments": event.PositionAssignments,
@@ -74,16 +72,16 @@ func UpdateEvent(db *mongo.Database, event *Event) (*mongo.UpdateResult, error) 
 	return res, err
 }
 
-func DeleteEvent(db *mongo.Database, eventID bson.ObjectID) (*mongo.DeleteResult, error) {
+func DeleteEvent(db *mongo.Database, eventID string) (*mongo.DeleteResult, error) {
 	collection := db.Collection(EventCollection)
 	filter := bson.M{"_id": eventID}
 	res, err := collection.DeleteOne(context.TODO(), filter)
 	return res, err
 }
 
-func GetEventsByService(db *mongo.Database, serviceID bson.ObjectID) ([]Event, error) {
+func GetEventsByService(db *mongo.Database, templateID string) ([]Event, error) {
 	collection := db.Collection(EventCollection)
-	filter := bson.M{"service": serviceID}
+	filter := bson.M{"template": templateID}
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		return nil, err
@@ -104,7 +102,7 @@ func GetEventsByService(db *mongo.Database, serviceID bson.ObjectID) ([]Event, e
 	return events, nil
 }
 
-func GetEventByID(db *mongo.Database, eventID bson.ObjectID) (*Event, error) {
+func GetEventByID(db *mongo.Database, eventID string) (*Event, error) {
 	collection := db.Collection(EventCollection)
 	var event Event
 	err := collection.FindOne(context.TODO(), bson.M{"_id": eventID}).Decode(&event)
@@ -114,7 +112,7 @@ func GetEventByID(db *mongo.Database, eventID bson.ObjectID) (*Event, error) {
 	return &event, nil
 }
 
-func GetEventsByMember(db *mongo.Database, memberID bson.ObjectID) ([]Event, error) {
+func GetEventsByMember(db *mongo.Database, memberID string) ([]Event, error) {
 	collection := db.Collection(EventCollection)
 	filter := bson.M{"positionAssignments.member": memberID}
 	cursor, err := collection.Find(context.TODO(), filter)
@@ -137,14 +135,14 @@ func GetEventsByMember(db *mongo.Database, memberID bson.ObjectID) ([]Event, err
 	return events, nil
 }
 
-func DeleteEventsByService(db *mongo.Database, serviceID bson.ObjectID) (*mongo.DeleteResult, error) {
+func DeleteEventsByService(db *mongo.Database, templateID string) (*mongo.DeleteResult, error) {
 	collection := db.Collection(EventCollection)
-	filter := bson.M{"service": serviceID}
+	filter := bson.M{"template": templateID}
 	res, err := collection.DeleteMany(context.TODO(), filter)
 	return res, err
 }
 
-func AddPositionAssignment(db *mongo.Database, eventID bson.ObjectID, assignment PositionAssignment) (*mongo.UpdateResult, error) {
+func AddPositionAssignment(db *mongo.Database, eventID string, assignment PositionAssignment) (*mongo.UpdateResult, error) {
 	collection := db.Collection(EventCollection)
 	filter := bson.M{"_id": eventID}
 	update := bson.M{
@@ -156,7 +154,7 @@ func AddPositionAssignment(db *mongo.Database, eventID bson.ObjectID, assignment
 	return res, err
 }
 
-func RemovePositionAssignment(db *mongo.Database, eventID bson.ObjectID, positionName string) (*mongo.UpdateResult, error) {
+func RemovePositionAssignment(db *mongo.Database, eventID string, positionName string) (*mongo.UpdateResult, error) {
 	collection := db.Collection(EventCollection)
 	filter := bson.M{"_id": eventID}
 	update := bson.M{

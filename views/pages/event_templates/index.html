@@ -4,7 +4,7 @@
   <div class="card-header">
     <nav class="navbar bg-body-tertiary">
       <form class="container-fluid justify-content-start">
-        <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/services/new" role="button">
+        <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/event_templates/new" role="button">
           <svg class="bi" aria-hidden="true">
             <use xlink:href="/public/icons/plus-circle.svg"> </use>
           </svg>
@@ -18,20 +18,28 @@
       <tr>
         <th>Name</th>
         <th>Description</th>
+        <th>Positions</th>
+        <th>Team</th>
+        <th>Start Time</th>
+        <th>End Time</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      {{range .Services}} 
+      {{range .EventTemplates}} 
       <tr>
         <td>
-          <a href="/services/{{.ID}}">
+          <a href="/event_templates/{{.ID}}">
             {{.Name}}
           </a>
         </td>
         <td>{{.Description}}</td>
+        <td>{{len .Positions}}</td>
+        <td>{{.Team.Name}}</td>
+        <td>{{.StartTime}}</td>
+        <td>{{.EndTime}}</td>
         <td>
-          <a class="icon-link text-danger" href="/services/delete/{{.ID}}">
+          <a class="icon-link text-danger" href="/event_templates/delete/{{.ID}}">
             <svg class="bi" aria-hidden="true">
               <use xlink:href="/public/icons/trash.svg"> </use>
             </svg>

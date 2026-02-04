@@ -1,0 +1,52 @@
+{{template "breadcrumbs" .}}
+
+<!-- New Event Template Card -->
+<div class="card">
+    <div class="card-header">{{ .Title }}</div>
+    <div class="card-body">
+
+        <form method="POST" action="/event_templates">
+
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" id="description" rows="3"></textarea>
+            </div>
+
+            <!-- Start Time -->
+            <div class="mb-3">
+                <label for="startTime" class="form-label">Start Time</label>
+                <input name="startTime" type="time" class="form-control" id="startTime" aria-describedby="startTimeHelp">
+            </div>
+
+            <!-- End Time -->
+            <div class="mb-3">
+                <label for="endTime" class="form-label">End Time</label>
+                <input name="endTime" type="time" class="form-control" id="endTime" aria-describedby="endTimeHelp">
+            </div>
+
+            <!-- Team Select -->
+            <div class="mb-3">
+                <label for="teamId" class="form-label">Team</label>
+                <select name="teamId" class="form-select" id="teamId" aria-describedby="teamIdHelp">
+                    {{range .Teams}}
+                    <option value="{{.ID}}">{{.Name}}</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+            <!-- Cancel -->
+            <a href="/event_templates" class="btn btn-link">Cancel</a>
+        </form>
+    </div>
+</div>

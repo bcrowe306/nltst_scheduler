@@ -16,18 +16,22 @@
             <svg class="bi" aria-hidden="true">
               <use xlink:href="/public/icons/person-badge.svg"></use>
             </svg>                    Members</a></li>
+          
         <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 {{if eq .SidebarNav "teams"}}active{{end}}" href="/teams">
             <svg class="bi" aria-hidden="true">
               <use xlink:href="/public/icons/people.svg"></use>
             </svg>                    Teams</a></li>
-        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 {{if eq .SidebarNav "services"}}active{{end}}" href="/services">
+
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 {{if eq .SidebarNav "event_templates"}}active{{end}}" href="/event_templates">
             <svg class="bi" aria-hidden="true">
               <use xlink:href="/public/icons/clipboard-data.svg"></use>
-            </svg>                    Services</a></li>
-        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 {{if eq .SidebarNav "schedules"}}active{{end}}" href="/schedules">
+            </svg>                    Event Templates</a></li>
+
+        <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 {{if eq .SidebarNav "schedule"}}active{{end}}" href="/schedule">
             <svg class="bi" aria-hidden="true">
               <use xlink:href="/public/icons/calendar2-check.svg"></use>
-            </svg>                    Schedules</a></li>
+            </svg>                    Schedule</a></li>
+          
         <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 {{if eq .SidebarNav "integrations"}}active{{end}}" href="/integrations">
             <svg class="bi" aria-hidden="true">
               <use xlink:href="#puzzle"></use>

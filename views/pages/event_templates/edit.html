@@ -1,44 +1,66 @@
 {{template "breadcrumbs" .}}
 
-<!-- New Service Card -->
+<!-- Edit Event Template Card -->
 <div class="card">
     <div class="card-header">
-        <form method="POST" action="/services/{{ .Service.ID }}">
+        <form method="POST" action="/event_templates/{{ .EventTemplate.ID }}">
         
         
             <!-- Name -->
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" value="{{ .Service.Name }}">
+                <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" value="{{ .EventTemplate.Name }}">
             </div>
         
             <!-- Description -->
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea name="description" class="form-control" id="description" rows="3">{{ .Service.Description }}</textarea>
+                <textarea name="description" class="form-control" id="description" rows="3">{{ .EventTemplate.Description }}</textarea>
+            </div>
+
+            <!-- Start Time -->
+            <div class="mb-3">
+                <label for="startTime" class="form-label">Start Time</label>
+                <input name="startTime" type="time" class="form-control" id="startTime" aria-describedby="startTimeHelp" value="{{ .EventTemplate.StartTime }}">
+            </div>
+            
+            <!-- End Time -->
+            <div class="mb-3">
+                <label for="endTime" class="form-label">End Time</label>
+                <input name="endTime" type="time" class="form-control" id="endTime" aria-describedby="endTimeHelp" value="{{ .EventTemplate.EndTime }}">
+            </div>
+
+            <!-- Team Select -->
+            <div class="mb-3">
+                <label for="teamId" class="form-label">Team</label>
+                <select name="teamId" class="form-select" id="teamId" aria-describedby="teamIdHelp">
+                    {{range .Teams}}
+                    <option value="{{.ID}}" {{if eq .ID $.EventTemplate.TeamID}}selected{{end}}>{{.Name}}</option>
+                    {{end}}
+                </select>
             </div>
         
             <!-- Submit -->
             <button type="submit" class="btn btn-primary">Submit</button>
         
             <!-- Cancel -->
-            <a href="/services" class="btn btn-link">Cancel</a>
+            <a href="/event_templates" class="btn btn-link">Cancel</a>
         </form>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-lg-3">
                 <p class="h6 mb-2">Positions</p>
-                <!-- Listgroup of service positions -->
+                <!-- Listgroup of event template positions -->
                 <ul class="list-group">
-                    {{range .Service.Positions}}
+                    {{range .EventTemplate.Positions}}
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">{{ .Name }}</div>
                             {{ .Description }}
                         </div>
                         <!-- Delete Position Button -->
-                        <a href="/services/{{ $.Service.ID }}/positions/{{ .Name }}/delete" class="icon-link text-danger me-2">
+                        <a href="/event_templates/{{ $.EventTemplate.ID }}/positions/{{ .Name }}/delete" class="icon-link text-danger me-2">
                             <svg class="bi" aria-hidden="true">
                                 <use xlink:href="/public/icons/trash.svg"> </use>
                             </svg>
@@ -51,7 +73,7 @@
             <div class="col-lg-9">
                 
                 <!-- Add Position Form -->
-                <form method="POST" action="/services/{{ .Service.ID }}/positions">
+                <form method="POST" action="/event_templates/{{ .EventTemplate.ID }}/positions">
                     <!-- Position Name -->
                     <div class="mb-3">
                         <label for="position-name" class="form-label">Position Name</label>
