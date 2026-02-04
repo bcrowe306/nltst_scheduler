@@ -16,7 +16,7 @@ func CreateServicesRoutes(app *fiber.App) {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
 		}
-		data := GetDefaultTemplateData(c, "Services")
+		data := GetDefaultTemplateData(c, "Services", "services")
 		services, err := models.GetAllServices(db)
 		if err != nil {
 			log.Print(err)
@@ -34,7 +34,7 @@ func CreateServicesRoutes(app *fiber.App) {
 
 	// New Service Route
 	app.Get("/services/new", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "New Service")
+		data := GetDefaultTemplateData(c, "New Service", "services")
 		err := c.Render("pages/services/new", data, "layouts/main")
 		if err != nil {
 			log.Print(err)
@@ -80,7 +80,7 @@ func CreateServicesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching service")
 		}
 
-		data := GetDefaultTemplateData(c, "Edit Service")
+		data := GetDefaultTemplateData(c, "Edit Service", "services")
 		data["Service"] = service
 
 		err = c.Render("pages/services/edit", data, "layouts/main")

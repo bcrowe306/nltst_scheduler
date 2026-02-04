@@ -11,7 +11,7 @@ func CreateMembersRoutes(app *fiber.App) {
 
 	// Members Index
 	app.Get("/members", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "Members")
+		data := GetDefaultTemplateData(c, "Members", "members")
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection not found")
@@ -35,7 +35,7 @@ func CreateMembersRoutes(app *fiber.App) {
 
 	// New Member Form
 	app.Get("/members/new", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "New Member")
+		data := GetDefaultTemplateData(c, "New Member", "members")
 
 		err := c.Render("pages/members/new", data, "layouts/main")
 		if err != nil {
@@ -82,7 +82,7 @@ func CreateMembersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving member")
 		}
 
-		data := GetDefaultTemplateData(c, "Edit Member")
+		data := GetDefaultTemplateData(c, "Edit Member", "members")
 		data["Member"] = member
 
 		err = c.Render("pages/members/edit", data, "layouts/main")

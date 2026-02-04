@@ -64,16 +64,17 @@ func GetRoutePathList(c fiber.Ctx) []string {
 	return segments
 }
 
-func GetDefaultTemplateData(c fiber.Ctx, title string) fiber.Map {
+func GetDefaultTemplateData(c fiber.Ctx, title string, sidebar_nav string) fiber.Map {
 	user, err := GetUserFromSession(c)
 	if err != nil {
 		return fiber.Map{}
 	}
 
 	return fiber.Map{
-		"Title": title,
-		"Path":  GetRoutePathList(c),
-		"User":  user,
+		"Title":      title,
+		"Path":       GetRoutePathList(c),
+		"User":       user,
+		"SidebarNav": sidebar_nav,
 	}
 }
 
@@ -88,11 +89,11 @@ func GetDatabaseFromContext(c fiber.Ctx) (*mongo.Database, error) {
 func CreateAuthRoutes(app *fiber.App) {
 
 	app.Get("/login", func(c fiber.Ctx) error {
-		return c.Render("pages/auth/login", GetDefaultTemplateData(c, "Login"))
+		return c.Render("pages/auth/login", GetDefaultTemplateData(c, "Login", ""))
 	})
 
 	app.Get("/signup", func(c fiber.Ctx) error {
-		return c.Render("pages/auth/signup", GetDefaultTemplateData(c, "Sign Up"))
+		return c.Render("pages/auth/signup", GetDefaultTemplateData(c, "Sign Up", ""))
 	})
 
 	app.Post("/auth/signup", func(c fiber.Ctx) error {

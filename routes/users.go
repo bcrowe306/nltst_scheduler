@@ -12,9 +12,9 @@ import (
 func CreateUsersRoutes(app *fiber.App) {
 	app.Get("/users/new", Protected, func(c fiber.Ctx) error {
 		// New user page
-		err := c.Render("pages/users/new", fiber.Map{
-			"Title": "New User",
-		}, "layouts/main")
+		data := GetDefaultTemplateData(c, "New User", "users")
+		data["Title"] = "New User"
+		err := c.Render("pages/users/new", data, "layouts/main")
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
@@ -35,10 +35,10 @@ func CreateUsersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching user")
 		}
 
-		err = c.Render("pages/users/edit", fiber.Map{
-			"Title": "Edit User",
-			"User":  user,
-		}, "layouts/main")
+		data := GetDefaultTemplateData(c, "Edit User", "users")
+		data["User"] = user
+
+		err = c.Render("pages/users/edit", data, "layouts/main")
 
 		if err != nil {
 			log.Print(err)
@@ -52,17 +52,13 @@ func CreateUsersRoutes(app *fiber.App) {
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
 		}
-
+		data := GetDefaultTemplateData(c, "Users", "users")
 		users, err := models.GetAllUsers(db)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching users")
 		}
-
-		err = c.Render("pages/users/index", fiber.Map{
-			"Title": "Users",
-			"Users": users,
-		}, "layouts/main")
-
+		data["Users"] = users
+		err = c.Render("pages/users/index", data, "layouts/main")
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")

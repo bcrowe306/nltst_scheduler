@@ -29,7 +29,7 @@ func CreateTeamsRoutes(app *fiber.App) {
 
 	// Teams Index Route
 	app.Get("/teams", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "Teams")
+		data := GetDefaultTemplateData(c, "Teams", "teams")
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -54,7 +54,7 @@ func CreateTeamsRoutes(app *fiber.App) {
 
 	// New Team Form Route
 	app.Get("/teams/new", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "New Team")
+		data := GetDefaultTemplateData(c, "New Team", "teams")
 		err := c.Render("pages/teams/new", data, "layouts/main")
 		if err != nil {
 			log.Print(err)
@@ -98,7 +98,7 @@ func CreateTeamsRoutes(app *fiber.App) {
 
 	// View Team Route
 	app.Get("/teams/:id", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "View Team")
+		data := GetDefaultTemplateData(c, "View Team", "teams")
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)

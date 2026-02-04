@@ -9,7 +9,7 @@ import (
 func CreateSchedulesRoutes(app *fiber.App) {
 	app.Get("/schedules", Protected, func(c fiber.Ctx) error {
 
-		err := c.Render("pages/schedules/index", GetDefaultTemplateData(c, "Schedules"), "layouts/main")
+		err := c.Render("pages/schedules/index", GetDefaultTemplateData(c, "Schedules", "schedules"), "layouts/main")
 
 		if err != nil {
 			log.Print(err)
