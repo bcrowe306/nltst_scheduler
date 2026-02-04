@@ -9,13 +9,6 @@ import (
 
 const ScheduleCollection = "schedules"
 
-//   Schedules:
-//     id: objectId
-//     name: string
-//     description: string
-//     events:
-//       - objectId
-
 type Schedule struct {
 	ID          bson.ObjectID `bson:"_id,omitempty"`
 	Name        string
