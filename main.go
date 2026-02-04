@@ -18,8 +18,6 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-// TODO: Create a config struct that holds all configuration values and load it from environment variables or a config file.
-
 func main() {
 	config, err := LoadConfig()
 	if err != nil {
