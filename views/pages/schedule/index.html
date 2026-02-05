@@ -1,39 +1,59 @@
 {{template "breadcrumbs" .}}
 <div class="card">
   <div class="card-header">
-    <nav class="navbar bg-body-tertiary">
-        <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/event_templates/new" role="button">
+      <form action="/schedule" method="POST" class="d-flex justify-content-start align-items-center gap-2">
+        <!-- Date Input -->
+        <div>
+          <label for="eventDate">Event Date</label>
+          <input id="eventDate" type="date" name="eventDate" class="form-control form-control-sm" value="{{.TimeNow.Format "2006-01-02"}}"/>
+        </div>
+
+        <!-- Event Template -->
+        <div>
+          <label for="eventTemplateID">Event Template</label>
+          <select id="eventTemplateID" name="eventTemplateID" class="form-select form-select-sm">
+            <option value="">-- None --</option>
+            {{range .EventTemplates}}
+              <option value="{{.ID}}">{{.Name}}</option>
+            {{end}}
+          </select>
+        </div>
+        
+        <button class="btn btn-sm btn-outline-secondary btn-primary btn-light mt-4" type="submit">
           <svg class="bi" aria-hidden="true">
             <use xlink:href="/public/icons/plus-circle.svg"> </use>
           </svg>
           New Event
-        </a>
-        <a class="btn btn-sm btn-outline-secondary btn-primary btn-light" href="/event_templates/new" role="button">
-          <svg class="bi" aria-hidden="true">
-            <use xlink:href="/public/icons/plus-circle.svg"> </use>
-          </svg>
-          New Event From Template
-        </a>
-      
-    </nav>
+        </button>
+      </form>
   </div>
   <div class="card-body"></div>
+
+  <!-- Table of Events -->
   <table class="table table table-striped table-hover">
     <thead>
       <tr>
-        <th>Email</th>
-        <th>Phone Number </th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th>Duration</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      {{range .Users}} 
+      {{range .Events}} 
       <tr>
-        <td>{{.Email}}</td>
-        <td>{{.PhoneNumber}}</td>
         <td>
-          <a class="icon-link" href="/users/{{.ID}}">
-            <svg class="bi" aria-hidden="true"> <use xlink:href="/public/icons/pencil-square.svg"> </use> </svg>
+          <a href="/schedule/{{.ID}}">{{.Name}}</a>
+        </td>
+        <td>{{.Description}}</td>
+        <td>{{.Date.Format "Mon Jan 2, 2006"}}</td>
+        <td>{{.StartTime}} - {{.EndTime}}</td>
+        <td>
+          <a class="icon-link text-danger" href="/schedule/delete/{{.ID}}">
+            <svg class="bi" aria-hidden="true">
+              <use xlink:href="/public/icons/trash.svg"> </use>
+            </svg>
           </a>
         </td>
       </tr>

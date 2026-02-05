@@ -14,16 +14,57 @@ use('nltst_scheduler');
 
 
 
-// get all teams and their members by performing a lookup
-db.teams.aggregate([
+
+
+// for each positionAssignment in all events, get the member details.
+// if positionAssignment is null, default to an empty array.
+// then group back to the original event structure.
+// sort by event date ascending.
+db.events.aggregate([
+  {
+    $unwind: {
+      path: '$positionAssignments',
+      preserveNullAndEmptyArrays: true
+    }
+  },
   {
     $lookup: {
       from: 'members',
-      localField: 'members',
+      localField: 'positionAssignments.memberId',
       foreignField: '_id',
       as: 'memberDetails'
     }
+  },
+  {
+    $unwind: {
+      path: '$memberDetails',
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  {
+    $group: {
+      _id: '$_id',
+      name: { $first: '$name' },
+      description: { $first: '$description' },
+      date: { $first: '$date' },
+      startTime: { $first: '$startTime' },
+      endTime: { $first: '$endTime' },
+      createdAt: { $first: '$createdAt' },
+      updatedAt: { $first: '$updatedAt' },
+      template: { $first: '$template' },
+      // reconstruct positionAssignments array with member details
+      positionAssignments: {
+        $push: {
+          _id: '$positionAssignments._id',
+          description: '$positionAssignments.description',
+          positionName: '$positionAssignments.positionName',
+          member: '$memberDetails'
+        }
+      }
+    }
+  },
+  {
+    $sort: { date: 1 }
   }
 ]);
-
 

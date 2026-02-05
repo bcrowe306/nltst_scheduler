@@ -73,6 +73,14 @@ func GetAllTeams(db *mongo.Database) ([]TeamView, error) {
 
 }
 
+func GetTeamMembers(db *mongo.Database, teamID string) ([]Member, error) {
+	team, err := GetTeamByID(db, teamID)
+	if err != nil {
+		return nil, err
+	}
+	return team.Members, nil
+}
+
 func InsertTeam(db *mongo.Database, team *Team) (*mongo.InsertOneResult, error) {
 	team.ID = uuid.NewString()
 	team.CreatedAt = time.Now()

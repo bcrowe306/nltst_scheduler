@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v3"
 
@@ -72,6 +73,7 @@ func GetDefaultTemplateData(c fiber.Ctx, title string, sidebar_nav string) fiber
 
 	return fiber.Map{
 		"Title":      title,
+		"TimeNow":    time.Now(),
 		"Path":       GetRoutePathList(c),
 		"User":       user,
 		"SidebarNav": sidebar_nav,
