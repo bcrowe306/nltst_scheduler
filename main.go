@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"time"
+
+	"github.com/gofiber/fiber/v3/log"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/extractors"
@@ -23,6 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading config:", err)
 	}
+	log.Info("Config loaded successfully")
 
 	client, err := mongo.Connect(options.Client().ApplyURI(config.MongoURI))
 	if err != nil {

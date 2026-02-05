@@ -42,15 +42,19 @@ type Event struct {
 }
 
 type PositionAssignment struct {
-	ID           string `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
-	PositionName string `bson:"positionName" json:"positionName" query:"positionName" form:"positionName"`
-	Description  string `bson:"description" json:"description" query:"description" form:"description"`
-	MemberID     string `bson:"memberId" json:"memberId" query:"memberId" form:"memberId"`
+	ID           string   `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
+	PositionName string   `bson:"positionName" json:"positionName" query:"positionName" form:"positionName"`
+	Description  string   `bson:"description" json:"description" query:"description" form:"description"`
+	MemberID     string   `bson:"memberId" json:"memberId" query:"memberId" form:"memberId"`
+	Members      []string `bson:"members,omitempty" json:"members" query:"members" form:"members"`
 }
 
 type PositionAssignmentWithMember struct {
-	PositionAssignment
-	Member Member `bson:"member" json:"member" query:"member" form:"member"`
+	ID           string   `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
+	PositionName string   `bson:"positionName" json:"positionName" query:"positionName" form:"positionName"`
+	Description  string   `bson:"description" json:"description" query:"description" form:"description"`
+	Member       Member   `bson:"member" json:"member" query:"member" form:"member"`
+	Members      []Member `bson:"members,omitempty" json:"members,omitempty" query:"members,omitempty" form:"members,omitempty"`
 }
 
 type EventWithMemberDetails struct {
@@ -67,6 +71,52 @@ type EventWithMemberDetails struct {
 	CreatedAt           time.Time                      `json:"createdAt" bson:"createdAt"`
 	UpdatedAt           time.Time                      `json:"updatedAt" bson:"updatedAt"`
 	PositionAssignments []PositionAssignmentWithMember `bson:"positionAssignments" json:"positionAssignments" query:"positionAssignments" form:"positionAssignments"`
+}
+
+type EventByPosition struct {
+	ID          string    `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
+	Name        string    `bson:"name" json:"name" query:"name" form:"name"`
+	Description string    `bson:"description" json:"description" query:"description" form:"description"`
+	Template    string    `bson:"template" json:"template" query:"template" form:"template"`
+	StartTime   string    `bson:"startTime" json:"startTime" query:"startTime" form:"startTime"`
+	EndTime     string    `bson:"endTime" json:"endTime" query:"endTime" form:"endTime"`
+	Date        time.Time `bson:"date" json:"date" query:"date" form:"date"`
+	CreatedAt   time.Time `json:"createdAt" bson:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt" bson:"updatedAt"`
+	Member      Member    `bson:"member" json:"member" query:"member" form:"member"`
+}
+
+type EventsGroupedByPositionName struct {
+	PositionName string            `bson:"_id" json:"_id" query:"_id" form:"_id"`
+	Events       []EventByPosition `bson:"events" json:"events" query:"events" form:"events"`
+}
+
+// Types for member schedule view
+type MemberScheduleEvent struct {
+	ID               string        `bson:"_id,omitempty" json:"_id" query:"_id" form:"_id"`
+	Name             string        `bson:"name" json:"name" query:"name" form:"name"`
+	Description      string        `bson:"description" json:"description" query:"description" form:"description"`
+	Template         string        `bson:"template" json:"template" query:"template" form:"template"`
+	StartTime        string        `bson:"startTime" json:"startTime" query:"startTime" form:"startTime"`
+	EndTime          string        `bson:"endTime" json:"endTime" query:"endTime" form:"endTime"`
+	Date             time.Time     `bson:"date" json:"date" query:"date" form:"date"`
+	ReminderInterval time.Duration `bson:"reminderInterval" json:"reminderInterval" query:"reminderInterval" form:"reminderInterval"`
+	ReminderEnabled  bool          `bson:"reminderEnabled" json:"reminderEnabled" query:"reminderEnabled" form:"reminderEnabled"`
+	TeamID           string        `bson:"teamId" json:"teamId" query:"teamId" form:"teamId"`
+	PositionName     string        `bson:"positionName,omitempty" json:"positionName" query:"positionName" form:"positionName"`
+	CreatedAt        time.Time     `json:"createdAt" bson:"createdAt"`
+	UpdatedAt        time.Time     `json:"updatedAt" bson:"updatedAt"`
+}
+
+type MemberSchedule struct {
+	ID          string                `bson:"_id" json:"_id"`
+	FirstName   string                `json:"firstName" bson:"firstName" query:"firstName" form:"firstName"`
+	LastName    string                `json:"lastName" bson:"lastName" query:"lastName" form:"lastName"`
+	Email       string                `json:"email" bson:"email" query:"email" form:"email"`
+	PhoneNumber string                `json:"phoneNumber" bson:"phoneNumber" query:"phoneNumber" form:"phoneNumber"`
+	CreatedAt   time.Time             `json:"createdAt" bson:"createdAt"`
+	UpdatedAt   time.Time             `json:"updatedAt" bson:"updatedAt"`
+	Events      []MemberScheduleEvent `bson:"events" json:"events" query:"events" form:"events"`
 }
 
 func GetAllEvents(db *mongo.Database) ([]Event, error) {
@@ -286,6 +336,8 @@ func RemovePositionAssignment(db *mongo.Database, eventID string, positionID str
 	return res, err
 }
 
+// Special queries and aggregations
+
 func GetEventsWithMemberDetails(db *mongo.Database) ([]EventWithMemberDetails, error) {
 	collection := db.Collection(EventCollection)
 	pipeline := mongo.Pipeline{
@@ -343,6 +395,250 @@ func GetEventsWithMemberDetails(db *mongo.Database) ([]EventWithMemberDetails, e
 	}
 	if err := cursor.Err(); err != nil {
 		log.Print(err)
+		return nil, err
+	}
+
+	return results, nil
+}
+
+func GetEventsGroupedByPositionName(db *mongo.Database) ([]EventsGroupedByPositionName, error) {
+	collection := db.Collection(EventCollection)
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$unwind", Value: "$positionAssignments"},
+		},
+		{
+			{Key: "$lookup", Value: bson.M{
+				"from":         "members",
+				"localField":   "positionAssignments.memberId",
+				"foreignField": "_id",
+				"as":           "member",
+			}},
+		},
+		{
+			{Key: "$unwind", Value: bson.M{"path": "$member", "preserveNullAndEmptyArrays": true}},
+		},
+		{
+			{Key: "$group", Value: bson.M{
+				"_id": "$positionAssignments.positionName",
+				"events": bson.M{
+					"$push": bson.M{
+						"_id":         "$_id",
+						"name":        "$name",
+						"description": "$description",
+						"date":        "$date",
+						"startTime":   "$startTime",
+						"endTime":     "$endTime",
+						"template":    "$template",
+						"createdAt":   "$createdAt",
+						"updatedAt":   "$updatedAt",
+						"member":      "$member",
+					},
+				},
+			}},
+		},
+		{
+			{Key: "$sort", Value: bson.M{"events.date": 1, "events.startTime": 1}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var results []EventsGroupedByPositionName
+	for cursor.Next(context.TODO()) {
+		var group EventsGroupedByPositionName
+		if err := cursor.Decode(&group); err != nil {
+			return nil, err
+		}
+		results = append(results, group)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+// GetMemberSchedule retrieves the schedule for a specific member within a date range.
+func GetMemberSchedule(db *mongo.Database, memberID string, startDate, endDate time.Time) (*MemberSchedule, error) {
+	collection := db.Collection("members")
+
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$match", Value: bson.M{"_id": memberID}},
+		},
+		{
+			{Key: "$lookup", Value: bson.M{
+				"from": "events",
+				"let":  bson.M{"memberId": "$_id"},
+				"pipeline": mongo.Pipeline{
+					{
+						{Key: "$match", Value: bson.M{
+							"$expr": bson.M{
+								"$in": []interface{}{
+									"$$memberId",
+									bson.M{
+										"$map": bson.M{
+											"input": "$positionAssignments",
+											"as":    "pa",
+											"in":    "$$pa.memberId",
+										},
+									},
+								},
+							},
+						}},
+					},
+					{
+						{Key: "$match", Value: bson.M{
+							"date": bson.M{"$gte": startDate, "$lte": endDate},
+						}},
+					},
+					{
+						{Key: "$addFields", Value: bson.M{
+							"positionName": bson.M{
+								"$let": bson.M{
+									"vars": bson.M{
+										"matchedPA": bson.M{
+											"$arrayElemAt": []interface{}{
+												bson.M{
+													"$filter": bson.M{
+														"input": "$positionAssignments",
+														"as":    "pa",
+														"cond":  bson.M{"$eq": []interface{}{"$$pa.memberId", "$$memberId"}},
+													},
+												},
+												0,
+											},
+										},
+									},
+									"in": "$$matchedPA.positionName",
+								},
+							},
+						}},
+					},
+					{
+						{Key: "$project", Value: bson.M{
+							"positionAssignments": 0,
+						}},
+					},
+					{
+						{Key: "$sort", Value: bson.M{"date": 1, "startTime": 1}},
+					},
+				},
+				"as": "events",
+			}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var results []MemberSchedule
+	for cursor.Next(context.TODO()) {
+		var schedule MemberSchedule
+		if err := cursor.Decode(&schedule); err != nil {
+			return nil, err
+		}
+		results = append(results, schedule)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	if len(results) > 0 {
+		return &results[0], nil
+	}
+	return nil, nil
+}
+
+func GetMembersSchedules(db *mongo.Database, startDate, endDate time.Time) ([]MemberSchedule, error) {
+	collection := db.Collection("members")
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$lookup", Value: bson.M{
+				"from": "events",
+				"let":  bson.M{"memberId": "$_id"},
+				"pipeline": mongo.Pipeline{
+					{
+						{Key: "$match", Value: bson.M{
+							"$expr": bson.M{
+								"$in": []interface{}{
+									"$$memberId",
+									bson.M{
+										"$map": bson.M{
+											"input": "$positionAssignments",
+											"as":    "pa",
+											"in":    "$$pa.memberId",
+										},
+									},
+								},
+							},
+						}},
+					},
+					{
+						{Key: "$match", Value: bson.M{
+							"date": bson.M{"$gte": startDate, "$lte": endDate},
+						}},
+					},
+					{
+						{Key: "$addFields", Value: bson.M{
+							"positionName": bson.M{
+								"$let": bson.M{
+									"vars": bson.M{
+										"matchedPA": bson.M{
+											"$arrayElemAt": []interface{}{
+												bson.M{
+													"$filter": bson.M{
+														"input": "$positionAssignments",
+														"as":    "pa",
+														"cond":  bson.M{"$eq": []interface{}{"$$pa.memberId", "$$memberId"}},
+													},
+												},
+												0,
+											},
+										},
+									},
+									"in": "$$matchedPA.positionName",
+								},
+							},
+						}},
+					},
+					{
+						{Key: "$project", Value: bson.M{
+							"positionAssignments": 0,
+						}},
+					},
+					{
+						{Key: "$sort", Value: bson.M{"date": 1, "startTime": 1}},
+					},
+				},
+				"as": "events",
+			}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var results []MemberSchedule
+	for cursor.Next(context.TODO()) {
+		var schedule MemberSchedule
+		if err := cursor.Decode(&schedule); err != nil {
+			return nil, err
+		}
+		results = append(results, schedule)
+	}
+	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 

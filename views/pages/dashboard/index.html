@@ -1,18 +1,31 @@
 {{template "breadcrumbs" .}}
-<h1>title</h1>
+<div class="container-fluid">
+  <div class="row">
+    {{range .Positions}}
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">{{.PositionName}}</h5>
+        </div>
+        <div class="card-body">
+          {{if .Events}}
+          <ul>
+            {{range .Events}}
+            <li>
+              <a href="/schedule/view/{{.ID}}">{{.Name}} - {{.Date.Format "Jan 2, 2006"}}</a>
+              {{if .Member}}
+              - {{.Member.FirstName}} {{.Member.LastName}}
+              {{end}}
+            </li>
 
-<table> 
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Phone Number </th>
-    </tr>
-  </thead>
-  <tbody> 
-    <tr>
-      <td>t</td>
-      <td>t</td>
-    </tr>
-  </tbody>
-</table>
-   
+            {{end}}
+          </ul>
+          {{else}}
+          <p>No events for this position.</p>
+          {{end}}
+        </div> <!-- card-body -->
+      </div> <!-- card -->
+    </div> <!-- col-lg-4 -->
+    {{end}}
+  </div> <!-- row  -->
+</div>
