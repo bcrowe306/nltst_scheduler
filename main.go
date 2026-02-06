@@ -13,6 +13,7 @@ import (
 	"context"
 
 	"github.com/bcrowe306/nltst_scheduler.git/routes"
+	"github.com/bcrowe306/nltst_scheduler.git/services"
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"github.com/gofiber/storage/mongodb/v2"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -20,12 +21,14 @@ import (
 )
 
 func main() {
+	// Load configuration from environment variables
 	config, err := LoadConfig()
 	if err != nil {
 		log.Fatal("Error loading config:", err)
 	}
 	log.Info("Config loaded successfully")
 
+	// Connect to MongoDB database
 	client, err := mongo.Connect(options.Client().ApplyURI(config.MongoURI))
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
@@ -43,6 +46,17 @@ func main() {
 	// Create DB schema
 	createDbSchema(config, database)
 
+	twilioService := services.NewTwilioService(config.TwilioAccountSID, config.TwilioAuthToken, config.TwilioFromNumber)
+	clicksendService := services.NewClickSendService(config.ClickSendUsername, config.ClickSendAPIKey, config.ClickSendFromNumber)
+
+	err = clicksendService.SendSMSCS("+61411111111", "This is a test")
+	if err != nil {
+		log.Errorf("Error sending ClickSend SMS: %v", err)
+	} else {
+		log.Info("ClickSend SMS sent successfully")
+	}
+	// twilioService.SendSMS("+18136062719", "Test Message from NLTST_Scheduler")
+
 	// Start Fiber app with HTML template engine
 	engine := html.New("./views", ".html")
 	engine.Reload(true) // Enable hot-reloading of templates during development
@@ -55,6 +69,8 @@ func main() {
 	// Setup app state. This makes config and database accessible in handlers
 	app.State().Set("config", config)
 	app.State().Set("db", database)
+	app.State().Set("twilioService", twilioService)
+	app.State().Set("clicksendService", clicksendService)
 
 	// Setup session middleware with MongoDB storage
 	store := mongodb.New(mongodb.Config{
