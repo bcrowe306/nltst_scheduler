@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v3/log"
 
 	"github.com/gofiber/fiber/v3"
@@ -12,6 +13,7 @@ import (
 
 	"context"
 
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"github.com/bcrowe306/nltst_scheduler.git/routes"
 	"github.com/bcrowe306/nltst_scheduler.git/services"
 	"github.com/gofiber/fiber/v3/middleware/session"
@@ -19,6 +21,11 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
+
+func Render(c fiber.Ctx, component templ.Component) error {
+	c.Set("Content-Type", "text/html")
+	return component.Render(c.Context(), c.Response().BodyWriter())
+}
 
 func main() {
 	// Load configuration from environment variables
@@ -48,6 +55,20 @@ func main() {
 
 	twilioService := services.NewTwilioService(config.TwilioAccountSID, config.TwilioAuthToken, config.TwilioFromNumber)
 	clicksendService := services.NewClickSendService(config.ClickSendUsername, config.ClickSendAPIKey, config.ClickSendFromNumber)
+	services.NewSendGridService(config.SendGridAPIKey)
+
+	// Example usage of SendGridService
+	// err = sendgridService.SendEmail(
+	// 	"contact@nltst.com",
+	// 	"bcrowe@nltst.com",
+	// 	"Test Email",
+	// 	"This is a test email sent via SendGrid.",
+	// 	"<strong>This is a test email sent via SendGrid.</strong>")
+	if err != nil {
+		log.Errorf("Error sending email via SendGrid: %v", err)
+	} else {
+		log.Info("Test email sent successfully via SendGrid")
+	}
 
 	err = clicksendService.SendSMSCS("+61411111111", "This is a test")
 	if err != nil {
@@ -90,6 +111,10 @@ func main() {
 	app.Use("/public", static.New("./public"))
 	// Create all routes
 	routes.CreateAllRoutes(app)
+
+	app.Get("/templ", func(c fiber.Ctx) {
+		Render(c, pages.Index())
+	})
 
 	// Start the server
 	app.Listen(":" + config.Port)

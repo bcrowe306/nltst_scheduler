@@ -9,12 +9,51 @@
             "problemMatcher": []
         },
 
+
+        // Build templ files
+        {
+            "label": "Build Templ Files",
+            "type": "shell",
+            "command": "go",
+            "args": [
+                "tool",
+                "templ",
+                "generate"
+            ],
+            "problemMatcher": []
+        },
+
+        // Build tailwindcss files
+        {
+            "label": "Build TailwindCSS Files",
+            "type": "shell",
+            "command": "npx",
+            "args": [
+                "tailwindcss",
+                "-i",
+                "./public/css/input.css",
+                "-o",
+                "./public/css/output.css",
+                "--minify"
+            ],
+            "problemMatcher": []
+        },
+
         // Build the Go application
         {
             "label": "Build Go Application",
             "type": "shell",
-            "command": "go build -o build/nltst_scheduler .",
-            "dependsOn": "Make Build Directory",
+            "command": "go",
+            "args": [
+                "build",
+                "-o",
+                "build/nltst_scheduler",
+                "."
+            ],
+            "dependsOn": [
+                "Make Build Directory",
+                "Build Templ Files"
+            ],
             "problemMatcher": []
         }
     ]

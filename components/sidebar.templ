@@ -1,0 +1,40 @@
+package components
+
+
+type SidebarLink struct {
+    Href string
+    Icon string
+    Label string
+}
+
+var sidebarLinks = []SidebarLink{
+    { Href: "#", Icon: "house", Label: "Dashboard",},
+    { Href: "#", Icon: "person-badge", Label: "Members",},
+    { Href: "#", Icon: "people", Label: "Teams",},
+    { Href: "#", Icon: "clipboard-data", Label: "Templates",},
+    { Href: "#", Icon: "calendar2-check", Label: "Schedule",},
+    { Href: "#", Icon: "person-circle", Label: "Users",},
+    { Href: "#", Icon: "gear-wide-connected", Label: "Settings",},
+
+}
+
+templ Sidebar() {
+    <aside class="fixed top-0 left-0 z-40 w-72 h-full transition-transform -translate-x-full sm:translate-x-0">
+        <div class="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-default">
+            <ul class="space-y-2 font-medium">
+            for _, link := range sidebarLinks {
+                <li>
+                    <a href={ link.Href }
+                        class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+                        <svg class=" w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 16 16">
+                            <use xlink:href={ "/public/icons/" + link.Icon + ".svg" }></use>
+                        </svg>
+                        <span class="ms-3">{ link.Label }</span>
+                    </a>
+                </li>
+            }
+            </ul>
+        </div>
+    </aside>
+}

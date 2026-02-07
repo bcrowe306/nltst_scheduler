@@ -20,6 +20,7 @@ type Config struct {
 	ClickSendUsername   string
 	ClickSendPassword   string
 	ClickSendFromNumber string
+	SendGridAPIKey      string
 	Port                string
 }
 
@@ -62,6 +63,12 @@ func LoadConfig() (*Config, error) {
 		log.Print("ClickSend Credentials are not supplied. SMS will not work")
 	}
 
+	// SendGrid API Key
+	sendGridAPIKey := os.Getenv("SENDGRID_API_KEY")
+	if sendGridAPIKey == "" {
+		log.Print("SendGrid API Key is not supplied. Email functionality will not work")
+	}
+
 	// Application Port
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -79,6 +86,7 @@ func LoadConfig() (*Config, error) {
 		ClickSendAPIKey:     clicksendAPIKey,
 		ClickSendUsername:   clicksendUsername,
 		ClickSendFromNumber: clicksendFromNumber,
+		SendGridAPIKey:      sendGridAPIKey,
 		Port:                port,
 	}, nil
 }

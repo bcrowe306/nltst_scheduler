@@ -1,14 +1,13 @@
 {
     "configurations": [
         {
-            "type": "lldb",
+            "type": "go",
             "request": "launch",
             "name": "Launch",
+            "mode": "exec",
             "program": "${workspaceFolder}/build/nltst_scheduler",
-            "args": [],
+            "preLaunchTask": "Build Go Application",
             "cwd": "${workspaceFolder}"
         }
-        
-    
     ]
 }
