@@ -2,13 +2,16 @@ package routes
 
 import (
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"github.com/gofiber/fiber/v3"
-
-	"log"
 )
 
 func CreateDashboardRoutes(app *fiber.App) {
 	app.Get("/", Protected, func(c fiber.Ctx) error {
+
+		return c.Redirect().To("/dashboard")
+	})
+	app.Get("/dashboard", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -19,13 +22,16 @@ func CreateDashboardRoutes(app *fiber.App) {
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching events")
 		}
-		data["Positions"] = eventsByPosition
-		err = c.Render("pages/dashboard/index", data, "layouts/main")
 
+		events, err := models.GetEventsWithMemberDetails(db)
 		if err != nil {
-			log.Print(err)
-			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
+			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching events")
 		}
+
+		data["Events"] = events
+
+		data["Positions"] = eventsByPosition
+		RenderHTMXPage(c, pages.DashboardPage(data))
 
 		return nil
 	})

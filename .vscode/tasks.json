@@ -52,6 +52,7 @@
             ],
             "dependsOn": [
                 "Make Build Directory",
+                "Build TailwindCSS Files",
                 "Build Templ Files"
             ],
             "problemMatcher": []

@@ -1,0 +1,17 @@
+package pages
+
+import (
+    "github.com/bcrowe306/nltst_scheduler.git/components"
+    "github.com/gofiber/fiber/v3"
+    "github.com/bcrowe306/nltst_scheduler.git/models"
+)
+
+
+templ DashboardPage(data fiber.Map) {
+    @components.Navbar()
+    <div class="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1">
+    for _, event := range data["Events"].([]models.EventWithMemberDetails) {
+        @components.EventCard(event)
+    }
+    </div>
+}

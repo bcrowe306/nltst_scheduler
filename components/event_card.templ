@@ -1,0 +1,35 @@
+package components
+
+import "github.com/bcrowe306/nltst_scheduler.git/models"
+
+templ EventCard(event models.EventWithMemberDetails) {
+    <div class="relative my-6 flex flex-col rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm">
+        <div class="flex items-center justify-between px-3 pt-3 pb-1">
+            <span class="font-semibold">{event.Name}</span>
+            <span class="float-end text-xs text-slate-400">{event.Date.Format("Jan 2, 2006")}</span>
+        </div>
+        <div class="px-3 pb-3">
+            <span class="text-sm">11am - 1pm</span>
+            <p class="mb-5 text-xs text-slate-400">{event.Description}</p>
+
+            // Positions
+            for _, position := range event.PositionAssignments {
+                <a href="#" class="flex items-center justify-between rounded-md px-2 py-0.5 hover:bg-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-500">&bull;</span>
+                        <span>{position.Member.FirstName + " " + position.Member.LastName}</span>
+                    </div>
+                    <div class="mr-0.5 text-xs text-slate-400">{position.PositionName}</div>
+                </a>
+            }
+            
+           
+        </div>
+        <div class="flex items-center justify-end gap-3 bg-slate-50 px-3 py-3">
+            <button type="button" onclick="alert()"
+                class="rounded-md  px-4 py-2 text-sm font-medium hover:bg-slate-200">Cancel</button>
+            <button type="button" onclick="alert()"
+                class="rounded-md bg-sky-500 px-4 py-2 text-sm text-slate-50">Edit</button>
+        </div>
+    </div>
+}

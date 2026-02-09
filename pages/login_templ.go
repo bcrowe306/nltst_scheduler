@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/bcrowe306/nltst_scheduler.git/components"
 
-func Index(comp templ.Component) templ.Component {
+func LoginPage() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -43,21 +43,7 @@ func Index(comp templ.Component) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = components.Sidebar().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main id=\"content\" class=\"lg:ml-64 p-4 h-full bg-slate-200\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if comp != nil {
-				templ_7745c5c3_Err = comp.Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</main>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\" w-full h-full bg-gray-300 flex justify-center items-center p-4\"><div class=\"w-96 p-5 bg-white rounded-lg shadow-md\"><img src=\"/public/img/nltst_logo.png\" alt=\"Logo\" class=\"w-16 h-16 mb-4 mx-auto\"><div class=\"flex justify-between items-center mb-1\"><h2 class=\"text-2xl font-bold mb-4\">Login</h2><a href=\"/signup\" class=\"text-sm text-blue-600 hover:underline\">Sign up</a></div><form action=\"/auth/login\" method=\"POST\" class=\"space-y-4\"><div><label for=\"email\" class=\"block text-sm font-medium text-gray-700\">Email</label> <input type=\"text\" id=\"email\" name=\"email\" placeholder=\"example@gmail.com\" required class=\"mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm\"></div><div><label for=\"password\" class=\"block text-sm font-medium text-gray-700\">Password</label> <input placeholder=\"password\" type=\"password\" id=\"password\" name=\"password\" required class=\"mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm\"></div><button type=\"submit\" class=\"w-full py-2 px-4 bg-slate-700 text-white font-semibold rounded-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2\">Login</button></form></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

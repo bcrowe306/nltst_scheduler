@@ -53,30 +53,10 @@ func main() {
 	// Create DB schema
 	createDbSchema(config, database)
 
+	// CONFIGURE SERVICES
 	twilioService := services.NewTwilioService(config.TwilioAccountSID, config.TwilioAuthToken, config.TwilioFromNumber)
 	clicksendService := services.NewClickSendService(config.ClickSendUsername, config.ClickSendAPIKey, config.ClickSendFromNumber)
-	services.NewSendGridService(config.SendGridAPIKey)
-
-	// Example usage of SendGridService
-	// err = sendgridService.SendEmail(
-	// 	"contact@nltst.com",
-	// 	"bcrowe@nltst.com",
-	// 	"Test Email",
-	// 	"This is a test email sent via SendGrid.",
-	// 	"<strong>This is a test email sent via SendGrid.</strong>")
-	if err != nil {
-		log.Errorf("Error sending email via SendGrid: %v", err)
-	} else {
-		log.Info("Test email sent successfully via SendGrid")
-	}
-
-	err = clicksendService.SendSMSCS("+61411111111", "This is a test")
-	if err != nil {
-		log.Errorf("Error sending ClickSend SMS: %v", err)
-	} else {
-		log.Info("ClickSend SMS sent successfully")
-	}
-	// twilioService.SendSMS("+18136062719", "Test Message from NLTST_Scheduler")
+	sendgridService := services.NewSendGridService(config.SendGridAPIKey)
 
 	// Start Fiber app with HTML template engine
 	engine := html.New("./views", ".html")
@@ -92,6 +72,7 @@ func main() {
 	app.State().Set("db", database)
 	app.State().Set("twilioService", twilioService)
 	app.State().Set("clicksendService", clicksendService)
+	app.State().Set("sendgridService", sendgridService)
 
 	// Setup session middleware with MongoDB storage
 	store := mongodb.New(mongodb.Config{
@@ -113,7 +94,7 @@ func main() {
 	routes.CreateAllRoutes(app)
 
 	app.Get("/templ", func(c fiber.Ctx) {
-		Render(c, pages.Index())
+		Render(c, pages.Index(nil))
 	})
 
 	// Start the server

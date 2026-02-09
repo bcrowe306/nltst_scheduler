@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v3"
-
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
+	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
@@ -88,14 +88,16 @@ func GetDatabaseFromContext(c fiber.Ctx) (*mongo.Database, error) {
 	return db, nil
 }
 
+// CreateAuthRoutes sets up all authentication related routes (login, signup, logout)
 func CreateAuthRoutes(app *fiber.App) {
 
 	app.Get("/login", func(c fiber.Ctx) error {
-		return c.Render("pages/auth/login", GetDefaultTemplateData(c, "Login", ""))
+		return RenderFullPage(c, pages.LoginPage())
+		// return c.Render("pages/auth/login", GetDefaultTemplateData(c, "Login", ""))
 	})
 
 	app.Get("/signup", func(c fiber.Ctx) error {
-		return c.Render("pages/auth/signup", GetDefaultTemplateData(c, "Sign Up", ""))
+		return RenderFullPage(c, pages.SignupPage())
 	})
 
 	app.Post("/auth/signup", func(c fiber.Ctx) error {
