@@ -6,6 +6,7 @@ import "github.com/bcrowe306/nltst_scheduler.git/models"
 
 templ MembersPage(data fiber.Map) {
     @components.Sidebar()
+    @components.Breadcrumbs()
     @components.CardBase() {
         if data["Members"] != nil {
             {{ members := data["Members"].([]models.Member) }}
@@ -51,6 +52,7 @@ templ MembersPage(data fiber.Map) {
 
 templ MembersEditPage(data fiber.Map) {
     @components.Sidebar()
+    @components.Breadcrumbs()
     @components.CardBase() {
         if data["Member"] != nil {
             {{ member := data["Member"].(*models.Member) }}

@@ -1,10 +1,7 @@
 package routes
 
 import (
-	"context"
 	"log"
-	"strings"
-	"time"
 
 	"github.com/bcrowe306/nltst_scheduler.git/models"
 	"github.com/bcrowe306/nltst_scheduler.git/pages"
@@ -12,82 +9,6 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
-
-func Protected(c fiber.Ctx) error {
-	sess := session.FromContext(c)
-	if sess == nil {
-		log.Print("Session is Nil")
-		return c.Redirect().To("/login")
-	}
-
-	// Check if user is authenticated
-	if sess.Get("authenticated") != true {
-		log.Print("Not Authenticated")
-		return c.Redirect().To("/login")
-	}
-
-	return c.Next()
-}
-
-func GetUserFromSession(c fiber.Ctx) (*models.User, error) {
-	sess := session.FromContext(c)
-	if sess == nil {
-		return nil, fiber.ErrUnauthorized
-	}
-
-	userID := sess.Get("user_id")
-	if userID == nil {
-		return nil, fiber.ErrUnauthorized
-	}
-
-	db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
-	if !ok {
-		return nil, fiber.ErrInternalServerError
-	}
-
-	user, err := models.FindUserByID(db, userID.(string))
-	if err != nil {
-		return nil, fiber.ErrUnauthorized
-	}
-
-	return user, nil
-}
-
-func GetRoutePathList(c fiber.Ctx) []string {
-	path := c.Path()
-
-	// Split the path into segments by /
-	var segments []string
-	for _, segment := range strings.Split(path, "/") {
-		if segment != "" {
-			segments = append(segments, segment)
-		}
-	}
-	return segments
-}
-
-func GetDefaultTemplateData(c fiber.Ctx, title string, sidebar_nav string) fiber.Map {
-	user, err := GetUserFromSession(c)
-	if err != nil {
-		return fiber.Map{}
-	}
-	c.SetContext(context.WithValue(context.TODO(), "SidebarNav", sidebar_nav))
-	return fiber.Map{
-		"Title":      title,
-		"TimeNow":    time.Now(),
-		"Path":       GetRoutePathList(c),
-		"User":       user,
-		"SidebarNav": sidebar_nav,
-	}
-}
-
-func GetDatabaseFromContext(c fiber.Ctx) (*mongo.Database, error) {
-	db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
-	if !ok {
-		return nil, fiber.ErrInternalServerError
-	}
-	return db, nil
-}
 
 // CreateAuthRoutes sets up all authentication related routes (login, signup, logout)
 func CreateAuthRoutes(app *fiber.App, BaseRoute string) {

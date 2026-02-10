@@ -33,7 +33,7 @@ func CreateScheduleRoutes(app *fiber.App, BaseRoute string) {
 		data["Events"] = events
 		data["EventTemplates"] = event_templates
 
-		err = RenderHTMXPage(c, pages.SchedulePage())
+		err = RenderHTMXPage(c, pages.SchedulePage(data))
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")

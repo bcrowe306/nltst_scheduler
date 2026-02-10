@@ -90,6 +90,9 @@ func main() {
 
 	// Serve static files
 	app.Use("/public", static.New("./public"))
+
+	app.Use(routes.BreadcrumbMiddleware)
+
 	// Create all routes
 	routes.CreateAllRoutes(app)
 

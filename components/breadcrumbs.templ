@@ -1,0 +1,37 @@
+package components
+
+import "github.com/bcrowe306/nltst_scheduler.git/models"
+
+templ Breadcrumbs() {
+    {{breadcrumbs := ctx.Value("Breadcrumbs").([]models.Breadcrumb)}}
+    <nav class="flex justify-between px-3.5 py-1 border border-neutral-200/60 rounded-md bg-white">
+        <ol
+            class="inline-flex items-center mb-3 space-x-1 text-xs text-neutral-500 [&_.active-breadcrumb]:text-neutral-600 [&_.active-breadcrumb]:font-medium sm:mb-0">
+            <li class="flex items-center h-full">
+                <a href="/" hx-get="/" hx-push-url="/" hx-target="#content" class="py-1 hover:text-neutral-900">
+                    <i class="bi bi-house"></i>
+                </a>
+            </li>
+            <svg class="w-5 h-5 text-gray-400/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g fill="none" stroke="none">
+                    <path d="M10 8.013l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                </g>
+            </svg>
+            for index, breadcrumb := range breadcrumbs {
+                <li><a href={breadcrumb.Url} hx-get={breadcrumb.Url} hx-push-url="true" hx-target="#content"
+                        class="inline-flex items-center py-1 font-normal hover:text-neutral-900 focus:outline-none">{breadcrumb.Label}</a>
+                </li>
+                if index < len(breadcrumbs)-1 {
+                    <svg class="w-5 h-5 text-gray-400/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <g fill="none" stroke="none">
+                            <path d="M10 8.013l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"></path>
+                        </g>
+                    </svg>
+                }
+            }
+        </ol>
+    </nav>
+    
+}

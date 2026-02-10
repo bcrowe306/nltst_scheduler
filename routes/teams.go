@@ -45,7 +45,7 @@ func CreateTeamsRoutes(app *fiber.App, BaseRoute string) {
 
 		data["Teams"] = teams
 
-		err = RenderHTMXPage(c, pages.TeamsPage())
+		err = RenderHTMXPage(c, pages.TeamsPage(data))
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
