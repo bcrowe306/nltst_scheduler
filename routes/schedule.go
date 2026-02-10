@@ -4,15 +4,16 @@ import (
 	"time"
 
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"github.com/gofiber/fiber/v3"
 
 	"log"
 )
 
-func CreateScheduleRoutes(app *fiber.App) {
+func CreateScheduleRoutes(app *fiber.App, BaseRoute string) {
 
 	// Schedule main page
-	app.Get("/schedule", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -28,12 +29,11 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching event templates")
 		}
 
-		data := GetDefaultTemplateData(c, "Schedule", "schedule")
+		data := GetDefaultTemplateData(c, "Schedule", BaseRoute)
 		data["Events"] = events
 		data["EventTemplates"] = event_templates
 
-		err = c.Render("pages/schedule/index", data, "layouts/main")
-
+		err = RenderHTMXPage(c, pages.SchedulePage())
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
@@ -42,7 +42,7 @@ func CreateScheduleRoutes(app *fiber.App) {
 	})
 
 	// Remove Position from Event
-	app.Get("/schedule/:event_id/positions/delete/:position_name", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:event_id/positions/delete/:position_name", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -55,11 +55,11 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error removing position from event")
 		}
 
-		return c.Redirect().To("/schedule/" + eventID)
+		return c.Redirect().To(BaseRoute + "/" + eventID)
 	})
 
 	// Delete Event
-	app.Get("/schedule/delete/:event_id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/delete/:event_id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -71,11 +71,11 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error deleting event")
 		}
 
-		return c.Redirect().To("/schedule")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Edit Event in schedule
-	app.Get("/schedule/:event_id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:event_id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -100,7 +100,7 @@ func CreateScheduleRoutes(app *fiber.App) {
 			}
 		}
 
-		data := GetDefaultTemplateData(c, "Edit Event", "schedule")
+		data := GetDefaultTemplateData(c, "Edit Event", BaseRoute)
 		data["Event"] = event
 		data["TeamMembers"] = teamMembers
 
@@ -113,7 +113,7 @@ func CreateScheduleRoutes(app *fiber.App) {
 	})
 
 	// New event in schedule
-	app.Post("/schedule", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -173,12 +173,12 @@ func CreateScheduleRoutes(app *fiber.App) {
 			}
 		}
 
-		return c.Redirect().To("/schedule/" + new_event.ID)
+		return c.Redirect().To(BaseRoute + "/" + new_event.ID)
 
 	})
 
 	// Update Event in schedule
-	app.Post("/schedule/:event_id", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:event_id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -207,11 +207,11 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error updating event")
 		}
 
-		return c.Redirect().To("/schedule")
+		return c.Redirect().To(BaseRoute + "/" + eventID)
 	})
 
 	// Add Position to Event
-	app.Post("/schedule/:event_id/positions", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:event_id/positions", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -229,11 +229,11 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error adding position to event")
 		}
 
-		return c.Redirect().To("/schedule/" + eventID)
+		return c.Redirect().To(BaseRoute + "/" + eventID)
 	})
 
 	// Assign Position to Member
-	app.Post("/schedule/:event_id/positions/assign", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:event_id/positions/assign", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -247,11 +247,11 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error assigning position to member")
 		}
 
-		return c.Redirect().To("/schedule/" + eventID)
+		return c.Redirect().To(BaseRoute + "/" + eventID)
 	})
 
 	// Unassign Position from Member
-	app.Post("/schedule/:event_id/positions/unassign", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:event_id/positions/unassign", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
@@ -264,7 +264,7 @@ func CreateScheduleRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error unassigning position from member")
 		}
 
-		return c.Redirect().To("/schedule/" + eventID)
+		return c.Redirect().To(BaseRoute + "/" + eventID)
 	})
 
 }

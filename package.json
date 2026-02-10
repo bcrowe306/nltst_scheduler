@@ -3,6 +3,7 @@
     "@imacrayon/alpine-ajax": "^0.12.6",
     "@tailwindcss/cli": "^4.1.18",
     "alpinejs": "^3.15.8",
+    "bootstrap-icons": "^1.13.1",
     "htmx.org": "^2.0.8",
     "tailwindcss": "^4.1.18"
   },

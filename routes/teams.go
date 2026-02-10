@@ -2,14 +2,15 @@ package routes
 
 import (
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"github.com/gofiber/fiber/v3"
 
 	"log"
 )
 
-func CreateTeamsRoutes(app *fiber.App) {
+func CreateTeamsRoutes(app *fiber.App, BaseRoute string) {
 	// Remove member from team route
-	app.Get("/teams/:id/remove_member/:member_id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:id/remove_member/:member_id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -24,12 +25,12 @@ func CreateTeamsRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error removing member from team")
 		}
 
-		return c.Redirect().To("/teams/" + teamID)
+		return c.Redirect().To(BaseRoute + "/" + teamID)
 	})
 
 	// Teams Index Route
-	app.Get("/teams", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "Teams", "teams")
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
+		data := GetDefaultTemplateData(c, "Teams", BaseRoute)
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -44,7 +45,7 @@ func CreateTeamsRoutes(app *fiber.App) {
 
 		data["Teams"] = teams
 
-		err = c.Render("pages/teams/index", data, "layouts/main")
+		err = RenderHTMXPage(c, pages.TeamsPage())
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
@@ -53,8 +54,8 @@ func CreateTeamsRoutes(app *fiber.App) {
 	})
 
 	// New Team Form Route
-	app.Get("/teams/new", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "New Team", "teams")
+	app.Get(BaseRoute+"/new", Protected, func(c fiber.Ctx) error {
+		data := GetDefaultTemplateData(c, "New Team", BaseRoute)
 		err := c.Render("pages/teams/new", data, "layouts/main")
 		if err != nil {
 			log.Print(err)
@@ -64,7 +65,7 @@ func CreateTeamsRoutes(app *fiber.App) {
 	})
 
 	// Create Team Route
-	app.Post("/teams", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -93,12 +94,12 @@ func CreateTeamsRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error creating team")
 		}
 
-		return c.Redirect().To("/teams")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// View Team Route
-	app.Get("/teams/:id", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "View Team", "teams")
+	app.Get(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
+		data := GetDefaultTemplateData(c, "View Team", BaseRoute)
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -130,7 +131,7 @@ func CreateTeamsRoutes(app *fiber.App) {
 	})
 
 	// Add member to team route
-	app.Post("/teams/:id/add_member", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:id/add_member", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -145,11 +146,11 @@ func CreateTeamsRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error adding member to team")
 		}
 
-		return c.Redirect().To("/teams/" + teamID)
+		return c.Redirect().To(BaseRoute + "/" + teamID)
 	})
 
 	// Edit Team details route
-	app.Post("/teams/:id/edit", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:id/edit", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -179,11 +180,11 @@ func CreateTeamsRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error updating team")
 		}
 
-		return c.Redirect().To("/teams/" + teamID)
+		return c.Redirect().To(BaseRoute + "/" + teamID)
 	})
 
 	// Delete Team route
-	app.Get("/teams/:id/delete", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:id/delete", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -197,6 +198,6 @@ func CreateTeamsRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error deleting team")
 		}
 
-		return c.Redirect().To("/teams")
+		return c.Redirect().To(BaseRoute)
 	})
 }

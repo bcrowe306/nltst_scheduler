@@ -14,7 +14,7 @@ templ EventCard(event models.EventWithMemberDetails) {
 
             // Positions
             for _, position := range event.PositionAssignments {
-                <a href="#" class="flex items-center justify-between rounded-md px-2 py-0.5 hover:bg-slate-100">
+                <a href={"/members/" + position.Member.ID} hx-get={"/members/" + position.Member.ID} hx-push-url="true" hx-target="#content" class="flex items-center justify-between rounded-md px-2 py-0.5 hover:bg-slate-100">
                     <div class="flex items-center gap-2">
                         <span class="text-green-500">&bull;</span>
                         <span>{position.Member.FirstName + " " + position.Member.LastName}</span>
@@ -29,7 +29,7 @@ templ EventCard(event models.EventWithMemberDetails) {
             <button type="button" onclick="alert()"
                 class="rounded-md  px-4 py-2 text-sm font-medium hover:bg-slate-200">Cancel</button>
             <button type="button" onclick="alert()"
-                class="rounded-md bg-sky-500 px-4 py-2 text-sm text-slate-50">Edit</button>
+                class="rounded-md bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-slate-50 hover:text-white">Edit</button>
         </div>
     </div>
 }

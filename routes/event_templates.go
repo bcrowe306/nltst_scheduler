@@ -2,28 +2,30 @@ package routes
 
 import (
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"github.com/gofiber/fiber/v3"
 
 	"log"
 )
 
-func CreateEventTemplatesRoutes(app *fiber.App) {
+func CreateEventTemplatesRoutes(app *fiber.App, BaseRoute string) {
 
 	// Event Templates Index Route
-	app.Get("/event_templates", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
 		}
-		data := GetDefaultTemplateData(c, "Event Templates", "event_templates")
+		data := GetDefaultTemplateData(c, "Event Templates", BaseRoute)
 		event_templates, err := models.GetAllEventTemplates(db)
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching event templates")
 		}
 		data["EventTemplates"] = event_templates
-		err = c.Render("pages/event_templates/index", data, "layouts/main")
+
+		err = RenderHTMXPage(c, pages.TemplatesPage())
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
@@ -32,13 +34,13 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 	})
 
 	// New Event Template Route
-	app.Get("/event_templates/new", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/new", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
 		}
-		data := GetDefaultTemplateData(c, "New Event Template", "event_templates")
+		data := GetDefaultTemplateData(c, "New Event Template", BaseRoute)
 		teams, err := models.GetAllTeams(db)
 		if err != nil {
 			log.Print(err)
@@ -55,7 +57,7 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 	})
 
 	// Create Event Template Route
-	app.Post("/event_templates", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -73,11 +75,11 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error creating event template")
 		}
 
-		return c.Redirect().To("/event_templates")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Edit Event Template Route
-	app.Get("/event_templates/:id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -97,7 +99,7 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching teams in event template edit")
 		}
 
-		data := GetDefaultTemplateData(c, "Edit Event Template", "event_templates")
+		data := GetDefaultTemplateData(c, "Edit Event Template", BaseRoute)
 		data["EventTemplate"] = eventTemplate
 		data["Teams"] = teams
 		err = c.Render("pages/event_templates/edit", data, "layouts/main")
@@ -109,7 +111,7 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 	})
 
 	// Update Event Template Route
-	app.Post("/event_templates/:id", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -128,11 +130,11 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error updating event template")
 		}
 
-		return c.Redirect().To("/event_templates")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Delete Event Template Route
-	app.Get("/event_templates/delete/:id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/delete/:id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -145,11 +147,11 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error deleting event template")
 		}
 
-		return c.Redirect().To("/event_templates")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Add position to event template route
-	app.Post("/event_templates/:id/positions", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:id/positions", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -171,11 +173,11 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error adding position to event template")
 		}
 
-		return c.Redirect().To("/event_templates/" + eventTemplateID)
+		return c.Redirect().To(BaseRoute + "/" + eventTemplateID)
 	})
 
 	// Remove position from event template route
-	app.Get("/event_templates/:event_template_id/positions/:position_name/delete", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:event_template_id/positions/:position_name/delete", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			log.Print(err)
@@ -190,6 +192,6 @@ func CreateEventTemplatesRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error removing position from event template")
 		}
 
-		return c.Redirect().To("/event_templates/" + eventTemplateID)
+		return c.Redirect().To(BaseRoute + "/" + eventTemplateID)
 	})
 }

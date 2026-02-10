@@ -9,21 +9,24 @@ import (
 )
 
 func isHTMXRequest(c fiber.Ctx) bool {
+	result := false
 	if c.HasHeader("HX-Request") {
 		hx_header := c.GetReqHeaders()["Hx-Request"]
 		if hx_header[0] == "true" {
-			return true
+			result = true
 		} else {
-			return false
+			result = false
 		}
 	} else {
-		return false
+		result = false
 	}
+	log.Printf("isHTMXRequest: %v", result)
+	return result
 }
 
 func Render(c fiber.Ctx, component templ.Component) error {
 	c.Set("Content-Type", "text/html")
-	log.Print(isHTMXRequest(c))
+
 	if isHTMXRequest(c) {
 		// Handle HTMX request
 		return component.Render(c.Context(), c.Response().BodyWriter())
@@ -35,7 +38,6 @@ func Render(c fiber.Ctx, component templ.Component) error {
 
 func RenderHTMXPage(c fiber.Ctx, component templ.Component) error {
 	c.Set("Content-Type", "text/html")
-	log.Print(isHTMXRequest(c))
 	if isHTMXRequest(c) {
 		// Handle HTMX request
 		return component.Render(c.Context(), c.Response().BodyWriter())
@@ -51,13 +53,13 @@ func RenderFullPage(c fiber.Ctx, component templ.Component) error {
 }
 
 func CreateAllRoutes(app *fiber.App) {
-	CreateDashboardRoutes(app)
-	CreateMembersRoutes(app)
-	CreateTeamsRoutes(app)
-	CreateEventTemplatesRoutes(app)
-	CreateScheduleRoutes(app)
-	CreateIntegrationsRoutes(app)
-	CreateUsersRoutes(app)
-	CreateSettingsRoutes(app)
-	CreateAuthRoutes(app)
+	CreateDashboardRoutes(app, "/dashboard")
+	CreateMembersRoutes(app, "/members")
+	CreateTeamsRoutes(app, "/teams")
+	CreateEventTemplatesRoutes(app, "/event_templates")
+	CreateScheduleRoutes(app, "/schedule")
+	CreateIntegrationsRoutes(app, "/integrations")
+	CreateUsersRoutes(app, "/users")
+	CreateSettingsRoutes(app, "/settings")
+	CreateAuthRoutes(app, "/auth")
 }

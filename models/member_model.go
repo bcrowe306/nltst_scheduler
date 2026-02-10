@@ -21,6 +21,10 @@ type Member struct {
 	UpdatedAt   time.Time `json:"updatedAt" bson:"updatedAt"`
 }
 
+func (m *Member) FullName() string {
+	return m.FirstName + " " + m.LastName
+}
+
 func GetAllMembers(db *mongo.Database) ([]Member, error) {
 	collection := db.Collection(MemberCollection)
 	cursor, err := collection.Find(context.TODO(), bson.M{})

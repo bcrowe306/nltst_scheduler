@@ -2,16 +2,17 @@ package routes
 
 import (
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"github.com/gofiber/fiber/v3"
 
 	"log"
 )
 
-func CreateMembersRoutes(app *fiber.App) {
+func CreateMembersRoutes(app *fiber.App, BaseRoute string) {
 
 	// Members Index
-	app.Get("/members", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "Members", "members")
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
+		data := GetDefaultTemplateData(c, "Members", BaseRoute)
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection not found")
@@ -25,7 +26,7 @@ func CreateMembersRoutes(app *fiber.App) {
 
 		data["Members"] = members
 
-		err = c.Render("pages/members/index", data, "layouts/main")
+		err = RenderHTMXPage(c, pages.MembersPage(data))
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
@@ -34,8 +35,8 @@ func CreateMembersRoutes(app *fiber.App) {
 	})
 
 	// New Member Form
-	app.Get("/members/new", Protected, func(c fiber.Ctx) error {
-		data := GetDefaultTemplateData(c, "New Member", "members")
+	app.Get(BaseRoute+"/new", Protected, func(c fiber.Ctx) error {
+		data := GetDefaultTemplateData(c, "New Member", BaseRoute)
 
 		err := c.Render("pages/members/new", data, "layouts/main")
 		if err != nil {
@@ -46,7 +47,7 @@ func CreateMembersRoutes(app *fiber.App) {
 	})
 
 	// Create Member
-	app.Post("/members", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection not found")
@@ -65,11 +66,11 @@ func CreateMembersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error creating member")
 		}
 
-		return c.Redirect().To("/members")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Edit Member Form
-	app.Get("/members/:id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection not found")
@@ -82,19 +83,20 @@ func CreateMembersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving member")
 		}
 
-		data := GetDefaultTemplateData(c, "Edit Member", "members")
+		data := GetDefaultTemplateData(c, "Edit Member", BaseRoute)
 		data["Member"] = member
 
-		err = c.Render("pages/members/edit", data, "layouts/main")
+		err = RenderHTMXPage(c, pages.MembersEditPage(data))
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
 		}
 		return nil
+
 	})
 
 	// Update Member
-	app.Post("/members/:id", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection not found")
@@ -115,11 +117,11 @@ func CreateMembersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error updating member")
 		}
 
-		return c.Redirect().To("/members")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Delete Member
-	app.Get("/members/delete/:id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/delete/:id", Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection not found")
@@ -132,6 +134,6 @@ func CreateMembersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error deleting member")
 		}
 
-		return c.Redirect().To("/members")
+		return c.Redirect().To(BaseRoute)
 	})
 }

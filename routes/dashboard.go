@@ -6,18 +6,18 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func CreateDashboardRoutes(app *fiber.App) {
+func CreateDashboardRoutes(app *fiber.App, BaseRoute string) {
 	app.Get("/", Protected, func(c fiber.Ctx) error {
 
-		return c.Redirect().To("/dashboard")
+		return c.Redirect().To(BaseRoute)
 	})
-	app.Get("/dashboard", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, err := GetDatabaseFromContext(c)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database connection error")
 		}
 
-		data := GetDefaultTemplateData(c, "Dashboard", "dashboard")
+		data := GetDefaultTemplateData(c, "Dashboard", BaseRoute)
 		eventsByPosition, err := models.GetEventsGroupedByPositionName(db)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching events")

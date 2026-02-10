@@ -4,12 +4,14 @@ import (
 	"github.com/gofiber/fiber/v3"
 
 	"log"
+
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 )
 
-func CreateSettingsRoutes(app *fiber.App) {
-	app.Get("/settings", Protected, func(c fiber.Ctx) error {
-
-		err := c.Render("pages/settings/index", GetDefaultTemplateData(c, "Settings", "settings"), "layouts/main")
+func CreateSettingsRoutes(app *fiber.App, BaseRoute string) {
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
+		data := GetDefaultTemplateData(c, "Settings", BaseRoute)
+		err := RenderHTMXPage(c, pages.SettingsPage(data))
 
 		if err != nil {
 			log.Print(err)

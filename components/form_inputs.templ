@@ -1,0 +1,62 @@
+package components
+
+templ TextInput(name string, value string, placeholder string) {
+    <div class="mx-auto w-full mb-5">
+
+        <input id={name} name={name} type="text" placeholder={placeholder} value={value}
+            class="ring-offset-background flex h-10 w-full rounded-md border border-neutral-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-neutral-300 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
+    </div>
+}
+
+
+templ EmailInput(name string, value string, placeholder string) {
+<div class="mx-auto w-full mb-5">
+    <input id={name} name={name} type="email" placeholder={placeholder} value={value}
+        class="ring-offset-background flex h-10 w-full rounded-md border border-neutral-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-neutral-300 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
+</div>
+}
+
+templ PasswordInput(name string, value string, placeholder string) {
+<div class="mx-auto w-full mb-5">
+    <input id={name} name={name} type="password" placeholder={placeholder} value={value}
+        class="ring-offset-background flex h-10 w-full rounded-md border border-neutral-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-neutral-300 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
+</div>
+}
+
+templ TextArea(name string, value string, placeholder string) {
+    <div class="mx-auto w-full mb-5">
+        <textarea id={name} name={name} placeholder={placeholder}
+            class="ring-offset-background flex w-full rounded-md border border-neutral-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-neutral-300 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50">{value}</textarea>
+    </div>
+}
+
+templ Checkbox(name string, checked bool, label string) {
+    <div class="flex items-center">
+        <input id={name} name={name} type="checkbox" checked={checked}
+            class="h-4 w-4 rounded border-neutral-300 text-blue-600 focus:ring-blue-500" />
+        <label for={name} class="ml-2 block text-sm text-gray-900">{label}</label>
+    </div>
+}
+
+templ Radio(name string, value string, checked bool, label string) {
+    <div class="flex items-center">
+        <input id={name + "_" + value} name={name} type="radio" value={value} checked={checked}
+            class="h-4 w-4 border-neutral-300 text-blue-600 focus:ring-blue-500" />
+        <label for={name + "_" + value} class="ml-2 block text-sm text-gray-900">{label}</label>
+    </div>
+}
+
+templ DateInput(name string, value string, placeholder string) {
+    <div class="mx-auto w-full mb-5">
+        <input id={name} name={name} type="date" placeholder={placeholder} value={value}
+            class="ring-offset-background flex h-10 w-full rounded-md border border-neutral-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-neutral-300 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
+    </div>
+}
+
+templ TimeInput(name string, value string, placeholder string) {
+    <div class="mx-auto w-full mb-5">
+        <input id={name} name={name} type="time" placeholder={placeholder} value={value}
+            class="ring-offset-background flex h-10 w-full rounded-md border border-neutral-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-neutral-300 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
+    </div>
+    
+}

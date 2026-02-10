@@ -6,13 +6,14 @@ import (
 	"log"
 
 	"github.com/bcrowe306/nltst_scheduler.git/models"
+	"github.com/bcrowe306/nltst_scheduler.git/pages"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func CreateUsersRoutes(app *fiber.App) {
-	app.Get("/users/new", Protected, func(c fiber.Ctx) error {
+func CreateUsersRoutes(app *fiber.App, BaseRoute string) {
+	app.Get(BaseRoute+"/new", Protected, func(c fiber.Ctx) error {
 		// New user page
-		data := GetDefaultTemplateData(c, "New User", "users")
+		data := GetDefaultTemplateData(c, "New User", BaseRoute)
 		data["Title"] = "New User"
 		err := c.Render("pages/users/new", data, "layouts/main")
 		if err != nil {
@@ -22,7 +23,7 @@ func CreateUsersRoutes(app *fiber.App) {
 		return nil
 	})
 
-	app.Get("/users/:id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
 		// User edit page
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
@@ -35,7 +36,7 @@ func CreateUsersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching user")
 		}
 
-		data := GetDefaultTemplateData(c, "Edit User", "users")
+		data := GetDefaultTemplateData(c, "Edit User", BaseRoute)
 		data["User"] = user
 
 		err = c.Render("pages/users/edit", data, "layouts/main")
@@ -47,18 +48,18 @@ func CreateUsersRoutes(app *fiber.App) {
 		return nil
 	})
 
-	app.Get("/users", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
 		}
-		data := GetDefaultTemplateData(c, "Users", "users")
+		data := GetDefaultTemplateData(c, "Users", BaseRoute)
 		users, err := models.GetAllUsers(db)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error fetching users")
 		}
 		data["Users"] = users
-		err = c.Render("pages/users/index", data, "layouts/main")
+		err = RenderHTMXPage(c, pages.UsersPage(data))
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")
@@ -67,7 +68,7 @@ func CreateUsersRoutes(app *fiber.App) {
 	})
 
 	// New user handler
-	app.Post("/users", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute, Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
@@ -92,7 +93,7 @@ func CreateUsersRoutes(app *fiber.App) {
 	})
 
 	// Update user handler
-	app.Post("/users/:id", Protected, func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/:id", Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
@@ -109,11 +110,11 @@ func CreateUsersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error updating user")
 		}
 
-		return c.Redirect().To("/users")
+		return c.Redirect().To(BaseRoute)
 	})
 
 	// Delete user handler
-	app.Get("/users/delete/:id", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/delete/:id", Protected, func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
@@ -125,7 +126,7 @@ func CreateUsersRoutes(app *fiber.App) {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error deleting user")
 		}
 
-		return c.Redirect().To("/users")
+		return c.Redirect().To(BaseRoute)
 	})
 
 }

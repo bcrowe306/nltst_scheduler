@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"log"
 	"strings"
 	"time"
@@ -70,7 +71,7 @@ func GetDefaultTemplateData(c fiber.Ctx, title string, sidebar_nav string) fiber
 	if err != nil {
 		return fiber.Map{}
 	}
-
+	c.SetContext(context.WithValue(context.TODO(), "SidebarNav", sidebar_nav))
 	return fiber.Map{
 		"Title":      title,
 		"TimeNow":    time.Now(),
@@ -89,7 +90,7 @@ func GetDatabaseFromContext(c fiber.Ctx) (*mongo.Database, error) {
 }
 
 // CreateAuthRoutes sets up all authentication related routes (login, signup, logout)
-func CreateAuthRoutes(app *fiber.App) {
+func CreateAuthRoutes(app *fiber.App, BaseRoute string) {
 
 	app.Get("/login", func(c fiber.Ctx) error {
 		return RenderFullPage(c, pages.LoginPage())
@@ -100,7 +101,7 @@ func CreateAuthRoutes(app *fiber.App) {
 		return RenderFullPage(c, pages.SignupPage())
 	})
 
-	app.Post("/auth/signup", func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/signup", func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
@@ -123,7 +124,7 @@ func CreateAuthRoutes(app *fiber.App) {
 		return c.Redirect().To("/login")
 	})
 
-	app.Post("/auth/login", func(c fiber.Ctx) error {
+	app.Post(BaseRoute+"/login", func(c fiber.Ctx) error {
 		db, ok := fiber.GetState[*mongo.Database](c.App().State(), "db")
 		if !ok {
 			return c.Status(fiber.StatusInternalServerError).SendString("Database not found in context")
@@ -162,7 +163,7 @@ func CreateAuthRoutes(app *fiber.App) {
 		})
 	})
 
-	app.Get("/auth/logout", Protected, func(c fiber.Ctx) error {
+	app.Get(BaseRoute+"/logout", Protected, func(c fiber.Ctx) error {
 		sess := session.FromContext(c)
 
 		// Complete session reset (clears all data + new session ID)

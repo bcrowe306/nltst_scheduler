@@ -9,6 +9,7 @@ import (
 
 templ DashboardPage(data fiber.Map) {
     @components.Navbar()
+    @components.Sidebar()
     <div class="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1">
     for _, event := range data["Events"].([]models.EventWithMemberDetails) {
         @components.EventCard(event)
