@@ -25,19 +25,19 @@ var bottomLinks = []SidebarLink{
 templ Sidebar() {
     {{page := ctx.Value("SidebarNav").(string)}}
     
-    <aside hx-swap-oob="true" id="sideBar" x-data class="fixed top-0 left-0 z-40 h-full w-64 sm:translate-x-0 -translate-x-full transition-transform" :class="$store.sidebarOpen ? '-translate-x-full' : 'translate-x-0' ">
+    <aside hx-swap="morph:innerHTML" id="sideBar" x-data class="fixed top-0 left-0 z-40 h-full w-64 sm:translate-x-0 -translate-x-full transition-transform" :class="$store.sidebarOpen ? '-translate-x-full' : 'translate-x-0' ">
         <div class="border-default h-full overflow-y-auto border-e bg-slate-800 px-3 py-4 text-slate-300">
             
             <a href="https://flowbite.com/" class="mb-5 flex items-center ps-2.5 text-slate-50">
                 <img src="https://flowbite.com/docs/images/logo.svg" class="me-3 h-6" alt="Flowbite Logo" />
                 <span class="text-heading self-center text-lg font-semibold whitespace-nowrap">NLT South Tampa</span>
             </a>
-            <ul class="space-y-2 font-medium">
+            <ul hx-swap="morph:innerHTML" id="topLinks" class="space-y-2 font-medium">
                 for _, link := range topLinks {
                     <li>
                         if link.Href == page {
                             <a class="flex items-center rounded-xl px-2 py-1.5 bg-slate-700 text-blue-400" hx-get={link.Href}
-                                hx-target="#content" hx-push-url="true" href={link.Href}>
+                                hx-target="#content" hx-push-url="true" href={link.Href} hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks">
                                 <svg class=" w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 16 16">
                                     <use xlink:href={ "/public/icons/" + link.Icon + ".svg" }></use>
@@ -46,7 +46,7 @@ templ Sidebar() {
                             </a>
                         } else {
                         <a class="flex items-center rounded-xl px-2 py-1.5 hover:bg-slate-700 hover:text-blue-400" hx-get={link.Href}
-                            hx-target="#content" hx-push-url="true" href={link.Href}>
+                            hx-target="#content" hx-push-url="true" href={link.Href} hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks">
                             <svg class=" w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 16 16">
                                 <use xlink:href={ "/public/icons/" + link.Icon + ".svg" }></use>
@@ -57,13 +57,12 @@ templ Sidebar() {
                         
                     </li>
                 }
-                
-                
             </ul>
-            <ul class="mt-4 space-y-2 border-t border-slate-700 pt-4 font-medium">
+            <ul hx-swap="morph:innerHTML" id="bottomLinks" class="mt-4 space-y-2 border-t border-slate-700 pt-4 font-medium">
                 for _, link := range bottomLinks {
                     <li>
-                        <a class="flex items-center rounded-xl px-2 py-1.5 hover:bg-slate-700 hover:text-blue-400" hx-get={link.Href} hx-target="#content" hx-push-url="true" href={link.Href}>
+                        <a class="flex items-center rounded-xl px-2 py-1.5 hover:bg-slate-700 hover:text-blue-400" 
+                        hx-get={link.Href} hx-target="#content" hx-push-url="true" href={link.Href} hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks">
                             <svg class=" w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 16 16">
                                 <use xlink:href={ "/public/icons/" + link.Icon + ".svg" }></use>

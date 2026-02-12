@@ -1,0 +1,39 @@
+package components
+
+import "github.com/bcrowe306/nltst_scheduler.git/models"
+
+templ TeamCard(team models.TeamView) {
+<div class="group relative mb-3 flex rounded-lg border flex-col justify-between border-slate-200 bg-white text-slate-700 shadow-sm">
+    <div class="flex flex-col px-3 pt-3 pb-1">
+        <div>
+            <span class="font-semibold">{team.Name}</span>
+        </div>
+
+        <p class="mb-5 text-xs text-slate-400">{team.Description}</p>
+
+        // Positions
+        for _, member := range team.Members {
+        <a href={"/members/" + member.ID} hx-get={"/members/" + member.ID} hx-push-url="true" hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks"
+            hx-target="#content" class="flex items-center justify-between rounded-md px-2 py-0.5 hover:bg-slate-100">
+            <div class="flex items-center gap-2">
+                <span class="text-green-500">&bull;</span>
+                <span>{member.FullName()}</span>
+            </div>
+            <div class="mr-0.5 text-xs text-slate-400">{member.Email}</div>
+        </a>
+        }
+
+
+    </div>
+    <div class="flex items-center justify-end gap-3 bg-slate-50 px-3 py-3 rounded-b-lg">
+        
+        <button 
+            type="button" 
+            hx-get={"/teams/" + team.ID} 
+            hx-target="#content"
+            hx-push-url="true"
+            hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks"
+            class="group-hover:opacity-100 opacity-0 rounded-md bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-slate-50 hover:text-white">Edit</button>
+    </div>
+</div>
+}

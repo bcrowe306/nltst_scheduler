@@ -49,7 +49,7 @@ func Sidebar() templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		page := ctx.Value("SidebarNav").(string)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<aside hx-swap-oob=\"true\" id=\"sideBar\" x-data class=\"fixed top-0 left-0 z-40 h-full w-64 sm:translate-x-0 -translate-x-full transition-transform\" :class=\"$store.sidebarOpen ? '-translate-x-full' : 'translate-x-0' \"><div class=\"border-default h-full overflow-y-auto border-e bg-slate-800 px-3 py-4 text-slate-300\"><a href=\"https://flowbite.com/\" class=\"mb-5 flex items-center ps-2.5 text-slate-50\"><img src=\"https://flowbite.com/docs/images/logo.svg\" class=\"me-3 h-6\" alt=\"Flowbite Logo\"> <span class=\"text-heading self-center text-lg font-semibold whitespace-nowrap\">NLT South Tampa</span></a><ul class=\"space-y-2 font-medium\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<aside hx-swap=\"morph:innerHTML\" id=\"sideBar\" x-data class=\"fixed top-0 left-0 z-40 h-full w-64 sm:translate-x-0 -translate-x-full transition-transform\" :class=\"$store.sidebarOpen ? '-translate-x-full' : 'translate-x-0' \"><div class=\"border-default h-full overflow-y-auto border-e bg-slate-800 px-3 py-4 text-slate-300\"><a href=\"https://flowbite.com/\" class=\"mb-5 flex items-center ps-2.5 text-slate-50\"><img src=\"https://flowbite.com/docs/images/logo.svg\" class=\"me-3 h-6\" alt=\"Flowbite Logo\"> <span class=\"text-heading self-center text-lg font-semibold whitespace-nowrap\">NLT South Tampa</span></a><ul hx-swap=\"morph:innerHTML\" id=\"topLinks\" class=\"space-y-2 font-medium\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -85,7 +85,7 @@ func Sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"><svg class=\" w-5 h-5 transition duration-75 group-hover:text-fg-brand\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 16 16\"><use xlink:href=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" hx-select-oob=\"#sideBar>ul#topLinks,#sideBar>ul#bottomLinks\"><svg class=\" w-5 h-5 transition duration-75 group-hover:text-fg-brand\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 16 16\"><use xlink:href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -142,7 +142,7 @@ func Sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\"><svg class=\" w-5 h-5 transition duration-75 group-hover:text-fg-brand\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 16 16\"><use xlink:href=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" hx-select-oob=\"#sideBar>ul#topLinks,#sideBar>ul#bottomLinks\"><svg class=\" w-5 h-5 transition duration-75 group-hover:text-fg-brand\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 16 16\"><use xlink:href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -178,7 +178,7 @@ func Sidebar() templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</ul><ul class=\"mt-4 space-y-2 border-t border-slate-700 pt-4 font-medium\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</ul><ul hx-swap=\"morph:innerHTML\" id=\"bottomLinks\" class=\"mt-4 space-y-2 border-t border-slate-700 pt-4 font-medium\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -190,7 +190,7 @@ func Sidebar() templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(link.Href)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 66, Col: 132}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 65, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -203,20 +203,20 @@ func Sidebar() templ.Component {
 			var templ_7745c5c3_Var11 templ.SafeURL
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinURLErrs(link.Href)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 66, Col: 189}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 65, Col: 98}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"><svg class=\" w-5 h-5 transition duration-75 group-hover:text-fg-brand\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 16 16\"><use xlink:href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\" hx-select-oob=\"#sideBar>ul#topLinks,#sideBar>ul#bottomLinks\"><svg class=\" w-5 h-5 transition duration-75 group-hover:text-fg-brand\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 16 16\"><use xlink:href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs("/public/icons/" + link.Icon + ".svg")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 69, Col: 87}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 68, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -229,7 +229,7 @@ func Sidebar() templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(link.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 71, Col: 58}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/sidebar.templ`, Line: 70, Col: 58}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {

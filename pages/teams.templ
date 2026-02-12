@@ -3,10 +3,67 @@ package pages
 import (
     "github.com/bcrowe306/nltst_scheduler.git/components"
     "github.com/gofiber/fiber/v3"
+    "github.com/bcrowe306/nltst_scheduler.git/models"
 )
 
 templ TeamsPage(data fiber.Map) {
     @components.Sidebar()
     @components.Breadcrumbs()
-    <h1>Teams Page</h1>
+    @components.CardBase() {
+        <div class="p-4">
+            <h1 class="text-xl font-semibold">Teams</h1>
+            <p class="text-sm text-slate-500">Manage your teams here.</p>
+        </div>
+       
+    }
+
+    <div class=" grid grid-cols-4 gap-4">
+        if data["Teams"] != nil {
+        {{ teams := data["Teams"].([]models.TeamView) }}
+        for _, team := range teams {
+        @components.TeamCard(team)
+        }
+        } else {
+        <div class="p-4">
+            <h1>No teams found</h1>
+        </div>
+        }
+    </div>
+}
+
+templ TeamEditPage(data fiber.Map) {
+    
+    @components.Sidebar()
+    @components.Breadcrumbs()
+    @components.CardBase() {
+    <div class="p-4">
+        <h1 class="text-xl font-semibold">Edit Team</h1>
+        <p class="text-sm text-slate-500">Edit your teams here. Click save once you are done.</p>
+    </div>
+    
+    }
+    if data["Team"] != nil {
+        {{ team := data["Team"].(*models.TeamView) }}
+        <div
+            class="relative mb-3 flex rounded-lg border flex-col justify-between border-slate-200 bg-white text-slate-700 shadow-sm">
+            <div class="flex flex-col px-3 pt-3 pb-1">
+                @components.TextInput("name", team.Name, "Team Name")
+                @components.TextArea("description", team.Description, "Team Description")
+        
+            </div>
+            <div class="flex items-center justify-end gap-3 bg-slate-50 px-3 py-3 rounded-b-lg">
+                <button type="button" hx-get="/teams" hx-push-url="true" hx-target="#content"
+                    hx-swap-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks"
+                    class="rounded-md  px-4 py-2 text-sm font-medium hover:bg-slate-200">Cancel</button>
+                <button type="button" hx-get={"/teams/" + team.ID} hx-target="#content" hx-push-url="true"
+                    hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks"
+                    class="rounded-md bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-slate-50 hover:text-white">Save</button>
+            </div>
+        </div>
+    } else {
+        <div class="p-4">
+            <h1>Team not found</h1>
+        </div>
+    }
+    
 }

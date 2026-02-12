@@ -22,6 +22,8 @@ var RoutePathMap = map[string]string{
 	"settings":        "Settings",
 	"users":           "Users",
 	"schedule":        "Schedule",
+	"new":             "New",
+	"edit":            "Edit",
 }
 
 func BreadcrumbMiddleware(c fiber.Ctx) error {

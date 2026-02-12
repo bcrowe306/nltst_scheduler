@@ -122,7 +122,7 @@ func CreateTeamsRoutes(app *fiber.App, BaseRoute string) {
 		data["Team"] = team
 		data["Members"] = members
 
-		err = c.Render("pages/teams/view", data, "layouts/main")
+		err = Render(c, pages.TeamEditPage(data))
 		if err != nil {
 			log.Print(err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error rendering template")

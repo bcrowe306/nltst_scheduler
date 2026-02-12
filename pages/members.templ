@@ -11,9 +11,14 @@ templ MembersPage(data fiber.Map) {
         if data["Members"] != nil {
             {{ members := data["Members"].([]models.Member) }}
             {{padding := "py-2 px-2"}}
-            <div class="p-4 border-slate-200">
+            <div class="p-4 border-slate-200 flex items-center justify-between">
                 <h1 class="text-xl font-semibold">Members</h1>
+                <a href="/members/new" hx-get="/members/new" hx-push-url="true" hx-target="#content" class="rounded-md bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-slate-50 hover:text-white">
+                    <i class="bi bi-plus-lg mr-1"></i>
+                    Add Member
+                </a>
             </div>
+
             <div class="p-4">
                 <table class=" table-auto w-full">
                     <thead>
@@ -28,12 +33,12 @@ templ MembersPage(data fiber.Map) {
                         for index, member := range members {
                             <tr class={"group hover:bg-slate-300", templ.KV("bg-slate-100", index % 2 == 0)}>
                                 <td class={padding}>
-                                    <a class="text-blue-500 hover:underline" href={"/members/" + member.ID} hx-get={"/members/" + member.ID} hx-push-url="true" hx-target="#content">{ member.FullName() } </a>
+                                    <a class="text-blue-500 hover:underline" href={"/members/" + member.ID} hx-get={"/members/" + member.ID} hx-push-url="true" hx-target="#content" hx-select-oob="#sideBar>ul#topLinks,#sideBar>ul#bottomLinks">{ member.FullName() } </a>
                                 </td>
                                 <td class={padding}>{member.Email}</td>
                                 <td class={padding}>{member.PhoneNumber}</td>
                                 <td class={padding}>
-                                    <a class="group-hover:opacity-100 opacity-0" href={"/members/" + member.ID + "/delete"} hx-delete={"/members/" + member.ID} hx-confirm={"Are you sure you want to delete " + member.FullName() + "?"} hx-target="#content">
+                                    <a class="group-hover:opacity-100 opacity-0" href={"/members/" + member.ID} hx-delete={"/members/" + member.ID} hx-push-url="/members" hx-confirm={"Are you sure you want to delete " + member.FullName() + "?"} hx-target="#content">
                                         <i class="bi bi-trash text-red-500 hover:text-red-700"></i>
                                     </a>
                                 </td>
@@ -82,5 +87,32 @@ templ MembersEditPage(data fiber.Map) {
             </div>
         }
     }
-    
+}
+
+templ MembersCreatePage(data fiber.Map) {
+    @components.Sidebar()
+    @components.Breadcrumbs()
+    @components.CardBase() {
+        
+        <form hx-post="/members" hx-target="#content" hx-push-url="/members">
+            <div class="p-5 border-slate-200">
+                <h1 class="text-xl font-semibold">Create Member</h1>
+            </div>
+            <div class="p-5">
+                
+                
+                    @components.TextInput("firstName", "", "First Name")
+                    @components.TextInput("lastName", "", "Last Name")
+                    @components.EmailInput("email", "", "Email")
+                    @components.TextInput("phoneNumber", "", "Phone Number")
+                    
+            </div>
+            <div class="flex items-center justify-end gap-3 bg-slate-100 px-3 py-3 rounded-b-lg">
+                <button type="button" hx-get="/members" hx-push-url="true" hx-target="#content"
+                    class="rounded-md  px-4 py-2 text-sm font-medium hover:bg-slate-200">Cancel</button>
+                <button type="submit" 
+                    class="rounded-md bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-slate-50 hover:text-white">Create</button>
+            </div>
+        </form>
+    }
 }

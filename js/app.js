@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs'
 import ajax from '@imacrayon/alpine-ajax'
 window.htmx = require('htmx.org');
+import "idiomorph/htmx"
 
 window.Alpine = Alpine
 Alpine.plugin(ajax)
